@@ -1,0 +1,3 @@
+"D:\CLION\CLion 2021.1.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\CGV_project.dir/objects.a
+D:\msys64\mingw64\bin\ar.exe cr CMakeFiles\CGV_project.dir/objects.a @CMakeFiles\CGV_project.dir\objects1.rsp
+D:\msys64\mingw64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\CGV_project.dir/objects.a -Wl,--no-whole-archive -o CGV_project.exe -Wl,--out-implib,libCGV_project.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\CGV_project.dir\linklibs.rsp

@@ -1,0 +1,3 @@
+C:/Users/ANKUR/Desktop/CGV project/cmake-build-debug/CMakeFiles/CGV_project.dir
+C:/Users/ANKUR/Desktop/CGV project/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/ANKUR/Desktop/CGV project/cmake-build-debug/CMakeFiles/rebuild_cache.dir
