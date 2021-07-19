@@ -1,0 +1,650 @@
+Cg_Team = new function () {
+    var $instance = this;
+    $instance.init = function () {
+		
+	$(document).on('click','#team-header .team-info .textbox .edit-name, #team-header .team-info .choose-team-name, #team-header .team-info .textbox .form-control',function(){
+		$("#team-header .team-info .textbox .form-control").removeAttr("readonly").focus();
+		$("#team-header .team-info .choose-team-name").hide();
+		$("#team-header .team-info input[type='button']").show();
+	});
+	
+	$(document).on('click', '#search-form1 .category-lists .dropdown-menu li a', function(){
+		
+		$('#search-form1 .category-lists .dropdown-menu li').removeClass('active');
+		$(this).parent().addClass('active');
+		var menuIcon = $(this).find('span').html();
+		var category_name = $(this).data('category');
+		var category_full_name = $(this).text();
+		$('#search_team').attr('placeholder', 'Search by '+category_full_name.toLowerCase());
+		$("#category_name").val(category_name)
+		$("#search-form1 .category-menu .icons").html(menuIcon);
+		
+	});
+		
+	
+	$(document).on("click",".manage_request", function(){ 
+		
+		var id = $(this).data('id');
+		var status = $(this).data('status');
+		var team_id = $('#team-manage-receive-requests #team_id').val();
+
+		var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=update_invite_receive_flag';
+		
+		$.post(action_url,{'id':id, 'status':status, 'team_id':team_id}, function(response) {
+				var msg = response; 
+				if(msg.status == 'success') {
+					if(status == 1) {
+						$('#invite_receive_user_reject_' +id ).remove();
+						$('#invite_receive_user_accept_' +id ).removeClass('manage_request button1');
+						$('#invite_receive_user_accept_' +id ).addClass('request-sent');
+						$('#invite_receive_user_accept_' +id ).text('Accepted');
+					} else {
+						$('#invite_receive_user_accept_' +id ).remove();
+						$('#invite_receive_user_reject_' +id ).removeClass('manage_request button3');
+						$('#invite_receive_user_reject_' +id ).addClass('request-sent');
+						$('#invite_receive_user_reject_' +id ).text('Rejected');
+					}
+				} 
+		});
+	});
+	
+	$(document).on("click",".manage_request_receive", function(){ 
+		
+		var id = $(this).data('id');
+		var status = $(this).data('status');
+        
+
+        if(status == 1) {
+            $('#team-manage-user_receive-requests  #invite_receive_user_reject_' +id ).remove();
+            $('#team-manage-user_receive-requests  #invite_receive_user_accept_' +id ).removeClass('manage_request_receive button1');
+            $('#team-manage-user_receive-requests  #invite_receive_user_accept_' +id ).addClass('request-sent');
+            $('#team-manage-user_receive-requests  #invite_receive_user_accept_' +id ).text('Accepted');
+            //window.location.reload();
+            if($('.nav-tabs #join-hackathon-team').length > 0) {                    
+                $('.nav-tabs #join-hackathon-team').trigger('click');
+            } else {
+                setTimeout(function(){
+                    window.location.href = window.location.href;
+                }, 2000); 
+            }
+        } else {
+            $('#team-manage-user_receive-requests  #invite_receive_user_accept_' +id ).remove();
+            $('#team-manage-user_receive-requests  #invite_receive_user_reject_' +id ).removeClass('manage_request_receive button3');
+            $('#team-manage-user_receive-requests  #invite_receive_user_reject_' +id ).addClass('request-sent');
+            $('#team-manage-user_receive-requests  #invite_receive_user_reject_' +id ).text('Rejected');
+        } 
+       
+
+		var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=update_invite_receive_request_flag';
+		
+		$.post(action_url,{'id':id, 'status':status}, function(response) {
+				var msg = response; 
+				if(msg.status == 'success') {
+                    console.log(msg);
+				} 
+		});
+	});
+	
+	$('#save_team').click (function () {
+		
+		$( "#team-header .team-info .success_msg").remove();
+		$( "#team-header .team-info .error_msg").remove();
+		
+		var team_name = $('input[name=team_name]').val();
+		var team_for = $('input[name=team_for]').val();
+		var season_id = $('input[name=season_id]').val();
+		var team_id = $(this).data('team_id');
+		var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=save_team_name';
+        
+        $(this).val('Saving...');
+      
+		$.post(action_url,{'team_name':team_name, 'team_id':team_id, 'team_for':team_for, 'season_id':season_id}, function(response) {
+			var msg = response; 
+				if(msg.status == 'success') {
+					$( "<span class='success_msg'> "+msg.msg+" </span>" ).insertAfter("#team-header .team-info input[type='button']");
+                                        $('.build-team').html('');
+                                        $('.join-team').html('');
+                                        $('#join-hackathon-team').hide();
+                    if($('.nav-tabs #build-team').length > 0) {                    
+                        $('.nav-tabs #build-team').trigger('click');
+                    } else {
+                        window.location.href = window.location.href;
+                    }
+				} else {
+                    $("#save_team").val('Save');
+					$( "<span class='error_msg'> "+msg.msg+" </span>" ).insertAfter("#team-header .team-info input[type='button']");
+				}
+		});
+	});
+	
+	$("[name='looking-for-request']").on('change', function() {
+		
+		var team_id = $(this).data('team_id');
+		var flag = $(this).is(":checked");
+
+		var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=save_membership_flag';
+		
+		$.post(action_url,{'flag':flag, 'team_id':team_id}, function(response) {
+			var msg = response; 
+				if(msg.status == 'success') {
+					//$( "<span class='success_msg'> "+msg.msg+" </span>" ).insertAfter("#team-header .team-info input[type='button']");
+				} else {
+					//$( "<span class='error_msg'> "+msg.msg+" </span>" ).insertAfter("#team-header .team-info input[type='button']");
+				}
+		});
+		
+	}); 
+	
+	$('#include_personal_message').click (function () {
+			if($(this).is(":checked")) {
+				$("#invite-to-join textarea").show();
+				$("#invite-to-join label").text('Personalized message (upto 100 words)');
+			} else {
+				$("#invite-to-join textarea").hide();
+				$("#invite-to-join label").text('Include personal message');
+			}
+	});
+	
+	
+	$('#send_personal_invitation').click (function () {
+		
+		$( "#invite-to-join .success_msg").remove();
+		$( "#invite-to-join .error_msg").remove();
+		var team_id = $(this).data('team_id');
+		$('#send_personal_invitation').addClass('disabled');
+		
+		var email_ids = $('#invite_email_ids').val();
+		var message = $('#invite_personal_message').val();
+		var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=send_personal_invitation';
+		
+		$.post(action_url,{'message':message, 'email_ids':email_ids, 'team_id':team_id}, function(response) {
+			var msg = response; 
+				if(msg.status == 'success') {
+					$(".message-info-block").html("");
+					$(".message-info-block").html(msg.msg);
+					$('#invite_email_ids').val('');
+                    $('#invite_personal_message').val('');
+                    $('.multiple_emails-ul li').remove();
+                    $('#current_emailsBS').text('');
+				} else {
+					$(".message-info-block").html("");
+					$(".message-info-block").html(msg.msg);
+				}
+				$('#send_personal_invitation').removeClass('disabled');
+		});
+	});
+	
+	$('#invite-team-members #search_team').keydown(function(event){ 
+        var keyCode = (event.keyCode ? event.keyCode : event.which);   
+        if (keyCode == 13) {
+            $('#search-team-val').trigger('click');
+        }
+    });
+    
+	$('#invite-team-members #search-team-val').click (function () {
+				//var page = $('#invite-team-members #page_number').val();
+				var page = 1;
+				var team_id = $('#invite-team-members #team_id').val();
+				var season_id = $('#invite-team-members #season_id').val();
+                
+                 var key_val  = $("#search-form1 .category-lists .dropdown-menu li.active a").text();
+                
+                var keyword = $('#invite-team-members #search_team').val();
+                var action_file_url = base_url + '/ajax_files/invite_other_members.php?team_id='+team_id+'&season_id='+season_id+'&page_no=' + page + '&keyword=' + keyword+ '&key_val=' + key_val.toLowerCase() ;
+                
+				$('#invite-team-members #search-form1 .error_msg').remove();
+				
+				$('#invite-team-members .table1 tr.ajax_loading_data').remove();
+				$('#invite-team-members #no_more_user .no-more-contents').remove();
+				
+				$('#invite-team-members #ViewMore').hide();
+				$('#invite-team-members #ajax_previous_contest').html('<td colspan="3"><p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p></td>').show();
+
+                
+                
+                
+				$.ajax({
+					type: "POST",
+					url: action_file_url,
+					data: ({}),
+					success: function(data) {
+						data = $.trim(data);
+						if (data == 'no_record') {
+							$('#invite-team-members #no_more_user').html('<p class="text-center no-content-txt">No users to display.</p>');
+							$('#invite-team-members #search-form1 .error_msg').remove();
+							$('#invite-team-members #ViewMore').hide();
+							$('#invite-team-members #ajax_previous_contest').html('');
+						} else {
+                           
+                            $('#invite-team-members .table1 tr.ajax_loading_data').remove();
+                            $('#invite-team-members #no_more_user .no-more-contents').remove();
+                            $('#invite-team-members .ajax_previous_contest').html('');
+                            $(data).insertBefore('#invite-team-members .ajax_previous_contest');
+							page++;
+							$('#invite-team-members #page_number').val(page);
+							$('#invite-team-members #ajax_previous_contest').hide();
+							$('#invite-team-members #ViewMore').show();
+						}
+					}
+				});
+				
+			
+			
+	});
+	
+    
+    $('#join-team #search_team').keydown(function(event){ 
+        var keyCode = (event.keyCode ? event.keyCode : event.which);   
+        if (keyCode == 13) {
+            $('#search-team-val').trigger('click');
+        }
+    });
+	
+	$('#join-team #search-team-val').click (function () {
+		
+				var page = 1;
+				var keyword = $('#join-team #search_team').val();
+            
+                var key_val  = $("#search-form1 .category-lists .dropdown-menu li.active a").text();
+                
+				$('#join-team #search-form1 .error_msg').remove();
+				var season_id = $('#season_id').val();
+				$('#join-team .teams-block').remove();
+				$('#join-team #no_more_user .no-more-contents').remove();
+				
+				$('#join-team #ViewMore').hide();
+                $('#competitive-teams #ViewMore').hide();
+				$('#join-team #ajax_previous_contest').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+				
+                var action_file_url = base_url + '/ajax_files/team_join_teams.php?page_no=' + page + '&keyword=' + keyword+ '&key_val=' + key_val.toLowerCase() ;
+				$.ajax({
+					type: "POST",
+					url: action_file_url,
+					data: ({season_id:season_id}),
+					success: function(data) {
+						data = $.trim(data);
+						if (data == 'no_record') {
+							$('#join-team #no_more_user').html('<p class="no-more-contents">No teams to display.</p>');
+							$('#join-team #search-form1 .error_msg').remove();
+							//$( "<span class='error_msg'> Name not found. Try another? </span>" ).insertAfter("#join-team #search-form1 div");
+							$('#join-team #ViewMore').hide();
+                            $('#competitive-teams #ViewMore').hide();
+							$('#join-team #ajax_previous_contest').html('');
+						} else {
+                            $('#join-team .teams-block').remove();
+                            $('#join-team #no_more_user .no-more-contents').remove();
+							$(data).insertBefore('#join-team .ajax_previous_contest');
+							page++;
+							$('#join-team #page_number').val(page);
+							$('#join-team #ajax_previous_contest').hide();
+							$('#join-team #ViewMore').show();
+                            $('#competitive-teams #ViewMore').show();
+						}
+					}
+				});
+				
+			
+	});
+	
+    $('#competitive-teams #search_team').keydown(function(event){ 
+        var keyCode = (event.keyCode ? event.keyCode : event.which);   
+        if (keyCode == 13) {
+            $('#competitive-teams #search-team-val').trigger('click');
+        }
+    });
+	
+	$('#competitive-teams #search-team-val').click (function () { 
+			var page = 1;
+			var keyword = $('#competitive-teams #search_team').val();
+			var team_id = $('#competitive-teams #team_id').val();
+			var season_id = $('#competitive-teams #season_id').val(); 
+            var key_val  = $("#search-form1 .category-lists .dropdown-menu li.active a").text()
+			$('#competitive-teams #search-form1 .error_msg').remove();
+			
+				$('#competitive-teams .teams-block').remove();
+				$('#competitive-teams #no_more_user .no-more-contents').remove();
+				
+				$('#competitive-teams #ViewMore').hide();
+				$('#competitive-teams #ajax_previous_contest').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+				var action_file_url = base_url + '/ajax_files/team_join_teams.php?type=competetive&page_no=' + page + '&team_id=' + team_id + '&keyword=' + keyword+'&key_val='+key_val.toLowerCase();
+				$.ajax({
+					type: "POST",
+					url: action_file_url,
+					data: ({season_id:season_id}),
+					success: function(data) {
+						data = $.trim(data);
+						if (data == 'no_record') {
+                            $('#competitive-teams .teams-block').hide();
+							//$('#competitive-teams #no_more_user').html('<p class="no-more-contents">No teams to display.</p>');
+							$('#competitive-teams #search-form1 .error_msg').remove();
+							$( "<span class='error_msg'> Name not found. Try another? </span>" ).insertAfter("#competitive-teams #search-form1 > div");
+							$('#competitive-teams #ViewMore').hide();
+                            $('#competitive-teams #ajax_previous_contest').hide();
+							
+						} else {
+                            $('#competitive-teams .teams-block').remove();
+                           // $('#competitive-teams #no_more_user .no-more-contents').remove();
+							$(data).insertBefore('#competitive-teams .ajax_previous_contest');
+							page++;
+							$('#competitive-teams #page_number').val(page);
+							$('#competitive-teams #ajax_previous_contest').hide();
+							$('#competitive-teams #ViewMore').show();
+						}
+					}
+				});
+			
+	});
+	
+	
+	
+		$(document).on('click','#invite-team-members .invite_recommended_member',function(){
+				
+				var team_id = $('#invite-team-members #team_id').val();
+				var season_id = $('#invite-team-members #season_id').val();
+				$(this).addClass('disabled');
+				$(this).text('Sending...');
+				var user_id = $(this).data('user_id');
+                var objButton = $(this);
+				var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=invite_sent_recommended_members';
+				$.ajax({
+					type: "POST",
+					url: action_url,
+					data: ({'season_id':season_id, 'to_user_id':user_id, 'team_id':team_id}),
+					success: function(response) {
+                        $(objButton).text('Invite');
+						var msg = response; 
+						if(msg.status == 'success') {
+							$('#invite-team-members #recommended_member_'+user_id).html('<button type="button" class="btn button2 request-sent">Invited</button>');
+                            $(objButton).text('Invited');
+							setTimeout(function(){
+                                                            $('.build-team').html('');
+                                                            $('.join-team').html('');
+                                                            $('.nav-tabs #build-team').trigger('click');}, 1000); 
+						}
+					}
+				});				
+				
+        });
+		
+		
+		$(document).on('click','#join-team .join_send_request',function(){
+				
+				var team_id = $(this).data('team_id');
+				$(this).addClass('disabled');
+				var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=invite_join_team_request';
+				$.ajax({
+					type: "POST",
+					url: action_url,
+					data: ({'team_id':team_id}),
+					success: function(response) {
+						var msg = response; 
+						if(msg.status == 'success') {
+							$('#join-team #join_team_'+team_id).html('<button type="button" class="btn request-sent">Request Sent</button>');
+						}
+					}
+				});				
+				
+        });
+		
+		
+	
+	
+		
+	}
+	
+	
+	 $instance.LoadInvitedMember = function() {
+
+        var page = $('#members-status #page_number').val();
+        var team_id = $('#members-status #team_id').val();
+        var season_id = $('#members-status #season_id').val();
+        $('#members-status #ViewMore').hide();
+        $('#members-status #ajax_previous_contest').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+        var action_file_url = base_url + '/ajax_files/team_invite_members.php?page_no=' + page + '&team_id=' + team_id;
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({season_id:season_id}),
+            success: function(data) {
+                data = $.trim(data);
+                if (data == 'no_record') {
+                    $('#members-status #no_more_user').html('<p class="no-more-contents">No more users to display.</p>');
+                    $('#members-status #ViewMore').hide();
+					$('#members-status #ajax_previous_contest').html('');
+                } else {
+                    $(data).insertBefore('#members-status .ajax_previous_contest');
+                    page++;
+                    $('#members-status #page_number').val(page);
+                    $('#members-status #ajax_previous_contest').hide();
+                    $('#members-status #ViewMore').show();
+                }
+            }
+        });
+
+    };
+	
+	$instance.LoadInvitedOtherTeamMember = function() {  
+		var page = $('#invite-team-members #page_number').val();
+        var team_id = $('#invite-team-members #team_id').val();
+        var season_id = $('#invite-team-members #season_id').val();
+        var key_val  = $("#search-form1 .category-lists .dropdown-menu li.active a").text();
+                                
+        var keyword = $('#invite-team-members #search_team').val();
+        var action_file_url = base_url + '/ajax_files/invite_other_members.php?team_id='+team_id+'&season_id='+season_id+'&page_no=' + page + '&keyword=' + keyword+ '&key_val=' + key_val.toLowerCase() ;
+        $('#invite-team-members #ajax_previous_contest').html('<td colspan="3"><p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p></td>').show();
+
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({keyword:keyword}),
+            success: function(data) {
+                data = $.trim(data);
+                if (data == 'no_record') {
+                    $('#invite-team-members #no_more_user').html('<p class="text-center no-content-txt">No users to display.</p>');
+                    $('#invite-team-members #ViewMore').hide();
+					$('#invite-team-members #ajax_previous_contest').html('');
+                } else {
+                     $('#invite-team-members .ajax_previous_contest').html('');
+                     $(data).insertBefore('#invite-team-members .ajax_previous_contest');
+                    page++;
+                    $('#invite-team-members #page_number').val(page);
+                    $('#invite-team-members #ajax_previous_contest').hide();
+
+                }
+            }
+        });
+	};
+	
+	
+	 $instance.LoadInvitedReceiveMember = function() {
+
+        var page = $('#team-manage-receive-requests #page_number').val();
+        var team_id = $('#team-manage-receive-requests #team_id').val();
+        var season_id = $('#team-manage-receive-requests #season_id').val();
+        $('#team-manage-receive-requests #ViewMore').hide();
+        $('#team-manage-receive-requests #ajax_previous_contest').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+        var action_file_url = base_url + '/ajax_files/team_invite_receive_members.php?page_no=' + page + '&team_id=' + team_id + '&season_id='+season_id;
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({}),
+            success: function(data) {
+                data = $.trim(data);
+                if (data == 'no_record') {
+                    $('#team-manage-receive-requests #no_more_user').html('<p class="text-center no-content-txt">No users to display.</p>');
+                    $('#team-manage-receive-requests #ViewMore').hide();
+					$('#team-manage-receive-requests #ajax_previous_contest').html('');
+                } else {
+                    $(data).insertBefore('#team-manage-receive-requests .ajax_previous_contest');
+                    page++;
+                    $('#team-manage-receive-requests #page_number').val(page);
+                    $('#team-manage-receive-requests #ajax_previous_contest').hide();
+                    $('#team-manage-receive-requests #ViewMore').show();
+                }
+            }
+        });
+
+    };
+	
+	
+	 $instance.LoadInvitedReceiveRequestMember = function() {
+
+		var page = $('#team-manage-user_receive-requests #page_number').val();
+        var season_id = $('#team-manage-user_receive-requests #season_id').val();
+        $('#team-manage-user_receive-requests #ViewMore').hide();
+        $('#team-manage-user_receive-requests #ajax_previous_contest').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+        var action_file_url = base_url + '/ajax_files/team_invite_receive_request_members.php?page_no=' + page ;
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({season_id:season_id}),
+            success: function(data) {
+                data = $.trim(data);
+                if (data == 'no_record') {
+					//$('.team-request-receive').hide();
+                    $('#team-manage-user_receive-requests #no_more_user').html('<p class="text-center no-content-txt">No users to display.</p>');
+                    $('#team-manage-user_receive-requests #ViewMore').hide();
+					$('#team-manage-user_receive-requests #ajax_previous_contest').html('');
+                } else {
+                    $(data).insertBefore('#team-manage-user_receive-requests .ajax_previous_contest');
+                    page++;
+                    $('#team-manage-user_receive-requests #page_number').val(page);
+                    $('#team-manage-user_receive-requests #ajax_previous_contest').hide();
+                    $('#team-manage-user_receive-requests #ViewMore').show();
+                }
+            }
+        });
+
+    };
+	
+	
+	 $instance.LoadExistingTeams = function() {
+
+        var page = $('#existing-teams #page_number').val();
+		var season_id = $('#existing-teams #season_id').val();
+		
+        $('#existing-teams #ViewMore').hide();
+        $('#existing-teams #ajax_previous_contest').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+        var action_file_url = base_url + '/ajax_files/team_existing_teams.php?page_no=' + page;
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({season_id:season_id}),
+            success: function(data) {
+                data = $.trim(data);
+                if (data == 'no_record') {
+                    $('#existing-teams #no_more_user').html('<p class="no-more-contents">No teams to display.</p>');
+                    $('#existing-teams #ViewMore').hide();
+					$('#existing-teams #ajax_previous_contest').html('');
+                } else {
+                    $(data).insertBefore('#existing-teams .ajax_previous_contest');
+                    page++;
+                    $('#existing-teams #page_number').val(page);
+                    $('#existing-teams #ajax_previous_contest').hide();
+                    $('#existing-teams #ViewMore').show();
+                }
+            }
+        });
+
+    };
+	
+	
+	 $instance.LoadJoinTeams = function() {
+
+		var page = $('#join-team #page_number').val();
+		var season_id = $('#join-team #season_id').val();
+		var user_id = $('#join-team #user_id').val();
+        var key_val  = $("#search-form1 .category-lists .dropdown-menu li.active a").text();
+		var keyword = $('#join-team #search_team').val();
+        
+        $('#join-team #ViewMore').hide();
+			$('#join-team #ajax_previous_contest').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+			var action_file_url = base_url + '/ajax_files/team_join_teams.php?page_no=' + page + '&keyword=' + keyword+ '&key_val=' + key_val.toLowerCase() ;
+			$.ajax({
+				type: "POST",
+				url: action_file_url,
+				data: ({season_id:season_id,user_id:user_id,key_val:key_val.toLowerCase()}),
+				success: function(data) {
+					data = $.trim(data);
+					if (data == 'no_record') {
+						$('#join-team #no_more_user').html('<p class="no-more-contents">No more teams to display.</p>');
+						$('#join-team #ViewMore').hide();
+						$('#join-team #ajax_previous_contest').html('');
+					} else {
+						$(data).insertBefore('#join-team .ajax_previous_contest');
+						page++;
+						$('#join-team #page_number').val(page);
+						$('#join-team #ajax_previous_contest').hide();
+						$('#join-team #ViewMore').show();
+					}
+				}
+			});
+
+    };
+	
+	 $instance.LoadCompetetiveTeams = function() {
+
+			var page = $('#competitive-teams #page_number').val();
+			var team_id = $('#competitive-teams #team_id').val();
+			var season_id = $('#competitive-teams #season_id').val();
+            var key_val  = $("#search-form1 .category-lists .dropdown-menu li.active a").text();
+            var keyword = $('#competitive-teams #search_team').val();
+			$('#competitive-teams #ViewMore').hide();
+			$('#competitive-teams #ajax_previous_contest').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+			//var action_file_url = base_url + '/ajax_files/team_join_teams.php?type=competetive&page_no=' + page + '&team_id=' + team_id;
+            var action_file_url = base_url + '/ajax_files/team_join_teams.php?type=competetive&team_id=' + team_id+'&page_no=' + page + '&keyword=' + keyword+ '&key_val=' + key_val.toLowerCase() ;
+			$.ajax({
+				type: "POST",
+				url: action_file_url,
+				data: ({season_id:season_id,key_val:key_val.toLowerCase()}),
+				success: function(data) {
+					data = $.trim(data);
+					if (data == 'no_record') {
+						$('#competitive-teams #no_more_user').html('<p class="no-more-contents">No more teams to display.</p>');
+						$('#competitive-teams #ViewMore').hide();
+						$('#competitive-teams #ajax_previous_contest').html('');
+					} else {
+						$(data).insertBefore('#competitive-teams .ajax_previous_contest');
+						page++;
+						$('#competitive-teams #page_number').val(page);
+						$('#competitive-teams #ajax_previous_contest').hide();
+						$('#competitive-teams #ViewMore').show();
+					}
+				}
+			});
+
+    };
+	
+	
+	
+}; 
+
+
+Cg_CommonFunction = new function () {
+    var $instance = this;
+    $instance.init = function () {
+		
+	}
+	
+	$instance.cgLeaderInvite = function(){
+        
+      $.getScript(theme_url+"/javascript/multiple-emails.js")
+			.done(function () {
+				$('#invite_email_ids').multiple_emails({position: "top"});
+				
+				//Shows the value of the input device, which is in JSON format
+				$('#current_emailsBS').text($('#invite_email_id').val());
+				$('#invite_email_id').change( function(){
+					$('#current_emailsBS').text($(this).val());
+				});
+				
+			})
+			.fail(function () {
+				console.log('multiple-emails not loaded');
+			});
+        
+        
+		
+	};
+	
+};

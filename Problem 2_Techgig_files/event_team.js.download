@@ -1,0 +1,1851 @@
+Event_Team = new function () {
+    
+    var $instance = this;
+     var loaderHtml = '<div class="no-content-found"><div class="wrapper" style="height:300px;"><div class="inner"><p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p></div></div></div>';
+    $instance.init = function () {
+        
+       
+		$(".hackathon-team-page #content").css("min-height",$(window).height() - ($("#coding-platform-head").innerHeight() + ($("#footer").innerHeight() / 2) + 24)); 
+		$("#hackathon-content-box").css("min-height", $("#hackathon-left-menu > .hackathon-box").innerHeight()); 
+        
+		$(document).on("click", ".show-hidden-skills", function() {
+			var moretext = " More";
+			var lesstext = "Less";
+			var skiilsCount = $(this).parent().find(".skills-list a").length - 6;
+			
+			if($(this).hasClass("less")) {
+				$(this).removeClass("less").html("+ " + skiilsCount + moretext);
+				$(this).parent().find(".skills-list a:eq(5)").nextAll().hide();
+			} else {
+				$(this).addClass("less").html(lesstext);
+				$(this).parent().find(".skills-list a:eq(5)").nextAll().show();
+			}
+			return false;
+		});
+        
+        $(document).on('click', '.create_team', function(){
+		
+    		$( "#create-a-team .error_msg").remove();
+    	
+    		var team_name = $('input[name=team_name]').val();
+    		var team_description = $('textarea[name=team_description]').val();
+    		var season_id = $('input[name=event_season_id]').val();
+    		var team_id = $('input[name=team_id]').val();
+            
+    		var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=save_event_team_name';
+            
+            $(this).addClass("disabled");
+            $(this).val('Saving...');
+            var objButton = $(this);
+          
+    		$.post(action_url,{'team_name':team_name, 'team_id':team_id, 'team_description':team_description, 'season_id':season_id}, function(response) {
+    			var msg = response; 
+    				if(msg.status == 'success') {
+                        
+                        var action_file_url = base_url + '/ajax_files/event_team.php?action=team_success_save&event_name='+event_name;
+                        $.ajax({
+                            type: "POST",
+                            url: action_file_url,
+                            data: ({'season_id':season_id}),
+                            success: function(data) {
+                               $('#create-a-team').addClass('success');
+                               $('#create-a-team').modal({
+                                   show: true 
+                               });
+                               $('#create-a-team').html(data);
+                            }
+                        }); 
+                        
+    				} else {
+                        
+                        $(".create_team").val('Create Team');
+                        $(objButton).removeClass( "disabled" );
+                        $('#create-a-team').data('bs.modal').options.keyboard = true;
+                        
+                        $.each(msg, function (index, value) {
+                          if(index == 'msg') {  
+                            $( "<span class='error_msg'> "+msg.msg+" </span>" ).insertAfter("#create-a-team input[name=team_name]");
+                          }
+                          if(index == 'msg_description') {  
+                            $( "<span class='error_msg'> "+msg.msg_description+" </span>" ).insertAfter("#create-a-team textarea[name=team_description]");
+                          }
+                          
+    					});	
+    				}
+    		});
+	});
+
+    $(document).on('click', '.edit_team', function(){
+        
+            $( "#edit-a-team .error_msg").remove();
+        
+            var team_name = $('input[name=team_name]').val();
+            var team_description = $('textarea[name=team_description]').val();
+            var season_id = $('input[name=event_season_id]').val();
+            var team_id = $('input[name=team_id]').val();
+            
+            var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=save_event_team_name';
+            
+            $(this).addClass("disabled");
+            $(this).val('Saving...');
+            var objButton = $(this);
+          
+            $.post(action_url,{'team_name':team_name, 'team_id':team_id, 'team_description':team_description, 'season_id':season_id}, function(response) {
+                var msg = response; 
+                    if(msg.status == 'success') {
+                        
+                        var action_file_url = base_url + '/ajax_files/event_team.php?action=team_success_save_modify&event_name='+event_name;
+                        $.ajax({
+                            type: "POST",
+                            url: action_file_url,
+                            data: ({'season_id':season_id}),
+                            success: function(data) {
+                               $('#edit-a-team').addClass('success');
+                               $('#edit-a-team').modal({
+                                   show: true 
+                               });
+                               $('#edit-a-team').html(data);
+                            }
+                        }); 
+                        
+                    } else {
+                        
+                        $(".edit_team").val('Save Changes');
+                        $(objButton).removeClass( "disabled" );
+                        $('#edit-a-team').data('bs.modal').options.keyboard = true;
+                        
+                        $.each(msg, function (index, value) {
+                          if(index == 'msg') {  
+                            $( "<span class='error_msg'> "+msg.msg+" </span>" ).insertAfter("#edit-a-team input[name=team_name]");
+                          }
+                          if(index == 'msg_description') {  
+                            $( "<span class='error_msg'> "+msg.msg_description+" </span>" ).insertAfter("#edit-a-team textarea[name=team_description]");
+                          }
+                          
+                        }); 
+                    }
+            });
+    });
+
+    $(document).on('click', '.delete_team', function(){
+                
+            var season_id = $('input[name=season_id]').val();
+            var team_id = $('input[name=team_id]').val();
+            
+            var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=delete_team';
+            
+            $(this).addClass("disabled");
+            $(this).val('Deleting...');
+          
+            $.post(action_url,{'team_id':team_id, 'season_id':season_id}, function(response) {
+                var msg = response; 
+                    if(msg.status == 'success') {
+                        
+                        var action_file_url = base_url + '/ajax_files/event_team.php?action=team_success_delete&event_name='+event_name;
+                        $.ajax({
+                            type: "POST",
+                            url: action_file_url,
+                            data: ({'season_id':season_id}),
+                            success: function(data) {
+                               $('#delete-your-team').addClass('success');
+                               $('#delete-your-team').modal({
+                                   show: true 
+                               });
+                               $('#delete-your-team').html(data);
+                            }
+                        }); 
+                
+                    }
+            });
+    });
+
+    $(document).on('click', '.exit_team', function(){
+                
+            var member_id = $('input[name=member_id]').val();
+            var season_id = $('input[name=season_id]').val();
+            var team_id = $('input[name=team_id]').val();
+            
+            var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=exit_team';
+            
+            $(this).addClass("disabled");
+            $(this).val('Exiting...');
+          
+            $.post(action_url,{'member_id':member_id, 'season_id':season_id, 'team_id':team_id}, function(response) {
+                var msg = response; 
+                    if(msg.status == 'success') {
+                        
+                        var action_file_url = base_url + '/ajax_files/event_team.php?action=team_success_exit&event_name='+event_name;
+                        $.ajax({
+                            type: "POST",
+                            url: action_file_url,
+                            data: ({'season_id':season_id}),
+                            success: function(data) {
+                               $('#exit-your-team').addClass('success');
+                               $('#exit-your-team').modal({
+                                   show: true 
+                               });
+                               $('#exit-your-team').html(data);
+                            }
+                        }); 
+                
+                    }
+            });
+    });
+
+    $(document).on('change','#looking-team-members',function(){
+        
+        var request_member_flag = $('#looking-team-members').prop("checked");
+        var team_id = $(this).attr('data-team_id');
+                
+        var action_file_url = base_url + '/ajax_files/saas_candidate_function.php?action=team_request_member_flag';
+
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'team_id':team_id, 'request_member_flag':request_member_flag}),
+            cache: false,
+            success: function(msg) {
+                if(msg.status == 'success') {
+                    // window.location.href = window.location.href;
+                }
+            }
+        });   
+        
+    });
+
+  	$('#create-a-team').on('hidden.bs.modal', function () {
+  	    $(".bootstrap-maxlength").remove();
+  	})
+
+    $(document).on('click', '.event-create-a-team', function(){
+            var season_id = $(this).attr('data-season_id');
+            var team_id = $(this).attr('data-team_id');
+            var action_file_url = base_url + '/ajax_files/event_team.php?action=create_team_modal';
+            $.ajax({
+                type: "POST",
+                url: action_file_url,
+                data: ({'season_id':season_id, 'team_id':team_id}),
+                success: function(data) {
+                   $('#create-a-team').html(data);
+                   $('#create-a-team').modal({
+                               backdrop: 'static', keyboard: false, show: true 
+                   });
+                   Tg_CommonFunction.formMaxlength();
+                }
+            }); 
+    
+	});
+
+    $(document).on('click', '.event-edit-a-team', function(){
+            var season_id = $(this).attr('data-season_id');
+            var team_id = $(this).attr('data-team_id');
+            var action_file_url = base_url + '/ajax_files/event_team.php?action=edit_team_modal';
+            $.ajax({
+                type: "POST",
+                url: action_file_url,
+                data: ({'season_id':season_id, 'team_id':team_id}),
+                success: function(data) {
+                   $('#edit-a-team').html(data);
+                   $('#edit-a-team').modal({
+                               backdrop: 'static', keyboard: false, show: true 
+                   });
+                   Tg_CommonFunction.formMaxlength();
+                }
+            }); 
+    
+    });
+
+    $(document).on('click', '.event-delete-your-team', function(){
+            var season_id = $(this).attr('data-season_id');
+            var team_id = $(this).attr('data-team_id');
+            var action_file_url = base_url + '/ajax_files/event_team.php?action=delete_team_modal';
+            $.ajax({
+                type: "POST",
+                url: action_file_url,
+                data: ({'season_id':season_id, 'team_id':team_id}),
+                success: function(data) {
+                   $('#delete-your-team').html(data);
+                   $('#delete-your-team').modal({
+                               backdrop: 'static', keyboard: false, show: true 
+                   });
+                }
+            }); 
+    
+    });
+
+    $(document).on('click', '.change-your-team', function(){
+            var msg = $(this).attr('data-msg');
+            var action_file_url = base_url + '/ajax_files/event_team.php?action=change_team_modal';
+            $.ajax({
+                type: "POST",
+                url: action_file_url,
+                data: ({'msg':msg}),
+                success: function(data) {
+                   $('#alert-change-your-team').html(data);
+                   $('#alert-change-your-team').modal({
+                               backdrop: 'static', keyboard: false, show: true 
+                   });
+                }
+            }); 
+    
+    });
+
+    $(document).on('click', '.event-exit-team', function(){
+
+        var member_id = $(this).attr('data-member_id');
+        var season_id = $(this).attr('data-season_id');
+        var team_id = $(this).attr('data-team_id');
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=exit_team_modal';
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'member_id':member_id, 'season_id':season_id, 'team_id':team_id}),
+            success: function(data) {
+               $('#exit-your-team').html(data);
+               $('#exit-your-team').modal({
+                           backdrop: 'static', keyboard: false, show: true 
+               });
+            }
+        }); 
+    
+    });
+
+    $(document).on('click','.remove_member_btn',function(){
+        
+        var member_id = $(this).attr('data-member_id');
+        var team_id = $(this).attr('data-team_id');
+        var season_id = $(this).attr('data-season_id');    
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=remove_team_member_confirmation';
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'member_id':member_id, 'team_id':team_id, 'season_id':season_id}),
+            cache: false,
+            success: function(data) {
+                 data = $.trim(data);
+                 $('#remove-team-member').html(data);
+                 $('#remove-team-member').modal({
+                               backdrop: 'static', keyboard: false, show: true 
+                  });
+                 //$('#remove-team-member').modal('show');
+            }
+        });
+        
+    });
+    
+    $(document).on('click','.remove_member_confirmation',function(){
+        
+        var season_id = $('input[name=season_id]').val();
+        var team_id = $('input[name=team_id]').val();
+        var member_id = $('input[name=member_id]').val();
+                
+        $(this).addClass("disabled");
+        $(this).val('Removing...');
+                
+        var action_file_url = base_url + '/ajax_files/saas_candidate_function.php?action=remove_team_member';
+
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'member_id':member_id, 'team_id':team_id, 'season_id':season_id}),
+            cache: false,
+            success: function(msg) {
+                if(msg.status == 'success') {
+
+                    $('#remove-team-member').modal('hide');
+                    // window.location.href = window.location.href;
+                    Event_Team.LoadManageMyTeam(); 
+                }
+            }
+        });   
+        
+    });
+
+    $(document).on('click','.cancel_invite_btn',function(){
+        
+        var invite_id = $(this).attr('data-invite_id');
+           
+        var action_file_url = base_url + '/ajax_files/saas_candidate_function.php?action=cancel_invite';
+
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'invite_id':invite_id}),
+            cache: false,
+            success: function(msg) {
+                if(msg.status == 'success') {
+                    $(".invite_"+invite_id).remove();
+                    $(".invite_to_team_btn_"+invite_id).addClass('leader_send_invite');
+                    $(".invite_to_team_btn_"+invite_id).removeClass('hide');
+                    // Event_Team.LoadInvitationsSent(); 
+                }
+            }
+        });   
+        
+    });
+
+    $(document).on('click','.undo_invite_response',function(){
+        
+        var invite_id = $(this).attr('data-invite_id');
+        var user_id = $(this).attr('data-user_id');
+        var season_id = $(this).attr('data-season_id');
+
+        var action_file_url = base_url + '/ajax_files/saas_candidate_function.php?action=undo_invite_response';
+
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'invite_id':invite_id,'user_id':user_id,'season_id':season_id}),
+            cache: false,
+            success: function(msg) {
+                if(msg.status == 'success') {
+
+                  $('.manage_received_requests #event_request_'+invite_id).html(msg.html);
+                    
+                }
+            }
+        });   
+        
+    });
+
+     $(document).on('click', '.team-manage-request ul.join_a_team li a', function(){
+            $(".team-manage-request ul.join_a_team li").removeClass('active');
+            $(this).parent().addClass('active');
+            $('.join-team-section').hide();
+            $(".no-content-found").remove();
+            $("#search_join_name").val('');
+            $("#req-join-info").data('teamid','');
+            var join_id = $(this).attr('data-id'); 
+            
+            $('.ViewMore').hide();
+            
+            if(join_id == 'request_sent') { 
+               $('.request_sent .team-block').remove();
+               $('.request_sent #no_more_user').hide();
+               $('.request_sent #page_number').val(1);
+               if($(this).find('span').hasClass('count')){
+                  $(this).find('span').remove();
+                  $.cookie("user_click_on_request_sent", 1, {expires : 1,   path    : '/'}); 
+               } 
+               $instance.LoadAllRequestSent();
+            }
+           
+            if(join_id == 'invitation_receive') { 
+               $('.invitation_receive .team-block').remove();
+               $('.invitation_receive #no_more_user').hide();
+               $('.invitation_receive #page_number').val(1);
+               if($(this).find('span').hasClass('count')){
+                  $(this).find('span').remove();
+                  $.cookie("user_click_on_invitation_receive", 1, {expires : 1,   path    : '/'}); 
+               } 
+               $instance.LoadAllInvitationReceived();
+            }
+            
+             if(join_id == 'available_team') { 
+               $('.available_team .team-block').remove();
+               $('.available_team #no_more_user').hide();
+               $('.available_team #page_number').val(1);
+               $instance.LoadAllAvailableTeams();
+            }
+            
+            $('.join-team-section.'+join_id).show(); 
+        
+	});
+    
+    $(document).on('click', 'ul.event_manage_team li a, .browse_available_participants, .invitation_sent_popup_participant', function(){
+        
+            $("ul.event_manage_team li").removeClass('active');
+            $(".no-content-found").remove();
+            $('.hackathon-filters .form-group').remove();
+            $(this).parent().addClass('active');
+            
+            var manage_id = $(this).attr('data-id'); 
+            
+            if(manage_id == 'browse_available_participants') {
+                manage_id = 'available_participants';
+                $("ul.event_manage_team li:eq(3)").addClass('active');
+            }
+            
+             if(manage_id == 'invitation_sent_popup_participant') {
+                manage_id = 'invitations_sent';
+                //$("ul.event_manage_team li:eq(2)").addClass('active');
+                $("ul.event_manage_team li a[data-id=invitations_sent]").parent().addClass('active');
+                $("#invite-participants-form").modal('hide');
+            }
+            
+            $('.ViewMore').hide();
+            $('.manage_team_event_hackathon').hide();
+            
+            if(manage_id == 'my_team') { 
+               $instance.LoadManageMyTeam();
+            }
+
+            if(manage_id == 'received_requests') { 
+               $('.manage-hackathon-team .manage_received_requests .team-block').remove();
+               $('.manage-hackathon-team .manage_received_requests').show();
+               $('.manage-hackathon-team .manage_received_requests #page_number').val(1);
+               $('.manage-hackathon-team .manage_received_requests #no_more_user').hide();
+               
+               $('#search_team_name').val('');
+               $('#received-req-info').data('userid','');
+               $(".hackathon-received-requests input[type='hidden']").val('');
+                if($('.hackathon-filters').is(":visible")){
+                    $('.show_filters').html('Show Filters');
+                    $('.show_filters').removeClass("active");
+                    $('.show_filters').attr('data-value',1);  
+                    $('.hackathon-filters').hide();
+                }   
+               $instance.LoadReceivedRequest();
+            }
+            
+            if(manage_id == 'invitations_sent') { 
+               $('.manage-hackathon-team .manage_invitations_sent .team-block').remove();
+               $('.manage-hackathon-team .manage_invitations_sent').show();
+               $('.manage-hackathon-team .manage_invitations_sent #page_number').val(1);
+               $('.manage-hackathon-team .manage_invitations_sent #no_more_user').hide();
+               $("#search_invitaion_name").val('');
+               $("#invi-sent-info").data('invite_id','');
+               $(".hackathon-invitation-sent input[type='hidden']").val('');
+               if($('.hackathon-filters').is(":visible")){
+                    $('.show_filters').html('Show Filters');
+                    $('.show_filters').removeClass("active");
+                    $('.show_filters').attr('data-value',1);  
+                    $('.hackathon-filters').hide();
+                }
+               $instance.LoadInvitationsSent();
+            }
+            
+            if(manage_id == 'available_participants') { 
+                $('.manage-hackathon-team .manage_team_event_hackathon .team-block').remove(); 
+                $('.manage-hackathon-team .manage_available_participants .team-block').remove(); 
+               $('.manage-hackathon-team .manage_available_participants').show();
+               $('.manage-hackathon-team .manage_available_participants #page_number').val(1);
+               $('.manage-hackathon-team .manage_available_participants #no_more_user').hide();
+               $("#avail-participant-info").data('user_id','');
+               $('#search_available_name').val('');
+               $(".hackathon-available-participants input[type='hidden']").val('');
+                if($('.hackathon-filters').is(":visible")){
+                $('.show_filters').html('Show Filters');
+                $('.show_filters').removeClass("active");
+                $('.show_filters').attr('data-value',1);  
+                $('.hackathon-filters').hide();
+            }  
+               $instance.LoadAvailableParticipants();
+            }
+        
+	});
+    
+    $(document).on('click', '.event_join_send_request_confirmation', function(){
+        var team_id = $(this).attr('data-team_id');
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=send_request_modal';
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'team_id':team_id}),
+            success: function(data) {
+               $('#send-request-form').html(data);
+               $('#send-request-form').modal({
+                           backdrop: 'static', keyboard: false, show: true 
+               });
+               Tg_CommonFunction.formMaxlength();
+            }
+        }); 
+    });
+
+    $(document).on('click', '.event_join_send_request', function(){
+        
+            $( "#send-request-form .error_msg").remove();
+        
+            var personal_note = $('textarea[name=personal_note]').val();
+            var team_id = $('#send-request-form input[name=team_id]').val();
+            
+            var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=event_invite_join_team_request';
+            
+            $(this).addClass("disabled");
+            $(this).val('Sending...');
+            var objButton = $(this);
+          
+            $.post(action_url,{'team_id':team_id, 'personal_note':personal_note}, function(response) {
+                var msg = response; 
+
+                    if(msg.status == 'success') {
+
+                        var action_file_url = base_url + '/ajax_files/event_team.php?action=event_join_send_request_success&event_name='+event_name;
+                        $.ajax({
+                            type: "POST",
+                            url: action_file_url,
+                            data: ({}),
+                            success: function(data) {
+                               $('#event_join_'+team_id).html('<span class="yellow-label">Request Sent</span>');
+                               $('#send-request-form').addClass('success');
+                               $('#send-request-form').modal({
+                                   show: true 
+                               });
+                               $('#send-request-form').html(data);
+                            }
+                        }); 
+                        
+                    } else {
+                        
+                        $(objButton).val('Save Changes');
+                        $(objButton).removeClass( "disabled" );
+                        $('#send-request-form').data('bs.modal').options.keyboard = true;
+                        
+                        $.each(msg, function (index, value) {
+
+                          if(index == 'msg_description') {  
+                            $( "<span class='error_msg'> "+msg.msg_description+" </span>" ).insertAfter("#send-request-form textarea[name=personal_note]");
+                          }
+                          
+                        }); 
+                    }
+            });
+    });
+
+    // $(document).on('click','.event_join_send_request',function(){
+				
+				// var team_id = $(this).attr('data-team_id');
+				// $('#event_join_'+team_id).html('<span class="yellow-label">Request Sent</span>');
+				// var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=event_invite_join_team_request';
+				// $.ajax({
+				// 	type: "POST",
+				// 	url: action_url,
+				// 	data: ({'team_id':team_id}),
+				// 	success: function(response) {
+				// 		var msg = response; 
+				// 		console.log(msg);
+				// 	}
+				// });				
+				
+    // });
+    
+   $(document).on('click','.confirm_leader_invitation',function(){
+				
+        var invite_id = $(this).attr('data-invite_id');
+        var team_name = $(this).attr('data-team_name');
+        var action_url = base_url+'/ajax_files/event_team.php?action=join_team_confirmation';
+        $.ajax({
+            type: "POST",
+            url: action_url,
+            data: ({'invite_id':invite_id, 'team_name':team_name}),
+            success: function(data) {
+                 data = $.trim(data);
+                 $('#join-team-confirmation').html(data);
+                 $('#join-team-confirmation').modal('show');
+                
+            }
+        });				
+				
+    });
+	
+	
+	$(document).on('click','.confirm_leader_invitation_to_leader',function(){
+				
+        var invite_id = $(this).attr('data-invite_id');
+        var team_name = $(this).attr('data-team_name');
+        var action_url = base_url+'/ajax_files/event_team.php?action=join_team_confirmation_to_leader';
+        $.ajax({
+            type: "POST",
+            url: action_url,
+            data: ({'invite_id':invite_id, 'team_name':team_name}),
+            success: function(data) {
+                 data = $.trim(data);
+                 $('#join-team-confirmation').html(data);
+                 $('#join-team-confirmation').modal('show');
+                
+            }
+        });				
+				
+    });
+    
+    $(document).on('click','.join_leader_team',function(){
+				
+				var invite_id = $(this).attr('data-invite_id');
+                
+                var action_file_url = base_url + '/ajax_files/saas_candidate_function.php?action=event_leader_invite_receive_request';
+
+                $.ajax({
+                    type: "POST",
+                    url: action_file_url,
+                    data: ({'invite_id':invite_id}),
+                    cache: false,
+                    success: function(msg) {
+
+                        if(msg.status == 'success' || msg.status == 'exceed') {
+							var url = window.location.href;
+                            if(url.indexOf('?') != -1) {
+								window.location.href = url+'&my_team=true';
+							} else {
+								window.location.href = url+'?my_team=true';
+							}
+                        } else {
+                            $('#join-team-confirmation').modal('hide');
+                            $("#alert_message_show .modal-body p").html(msg.msg);
+                            $("#alert_message_show").modal('show');
+                        }
+                    }
+                });		
+				
+    });
+    
+	
+	$(document).on('click','.join_leader_team_leader',function(){
+				
+				var invite_id = $(this).attr('data-invite_id');
+                
+                var action_file_url = base_url + '/ajax_files/saas_candidate_function.php?action=event_leader_invite_receive_request_leader';
+
+                $.ajax({
+                    type: "POST",
+                    url: action_file_url,
+                    data: ({'invite_id':invite_id}),
+                    cache: false,
+                    success: function(msg) {
+
+                        if(msg.status == 'success' || msg.status == 'exceed') {
+							var url = window.location.href;
+                            if(url.indexOf('?') != -1) {
+								window.location.href = url+'&my_team=true';
+							} else {
+								window.location.href = url+'?my_team=true';
+							}
+                        } else {
+                            $('#join-team-confirmation').modal('hide');
+                            $("#alert_message_show .modal-body p").html(msg.msg);
+                            $("#alert_message_show").modal('show');
+                        }
+                    }
+                });		
+				
+    });
+	
+    $(document).on('click','.leader_receive_request',function(){
+				
+				var invite_id = $(this).attr('data-id');
+				var flag_status = $(this).attr('data-status');
+				var user_id = $(this).attr('data-user_id');
+        var season_id = $(this).attr('data-season_id');
+                
+                if(flag_status == 1) {
+                    var action_file_url = base_url + '/ajax_files/event_team.php?action=leader_accept_confirmation';
+                    $('.accept-reject-request').attr('id', 'accept-member-request');
+                } else {
+                    var action_file_url = base_url + '/ajax_files/event_team.php?action=leader_reject_confirmation';
+                    $('.accept-reject-request').attr('id', 'reject-member-request');
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: action_file_url,
+                    data: ({'invite_id':invite_id, 'flag_status':flag_status, 'user_id':user_id, 'season_id':season_id}),
+                    cache: false,
+                    success: function(data) {
+                         data = $.trim(data);
+                         $('.accept-reject-request').html(data);
+                         $('.accept-reject-request').modal('show');
+                    }
+                });		
+				
+    });
+    
+    $(document).on('change','input[name="dont-show-message"]',function(){
+        
+        var request_flag = $(this).prop("checked");
+        var user_id = $(this).attr('data-user_id');
+        var invite_id = $(this).attr('data-id');
+                
+        var action_file_url = base_url + '/ajax_files/saas_candidate_function.php?action=leader_confirmation_request_flag';
+
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'user_id':user_id, 'request_flag':request_flag, 'invite_id':invite_id}),
+            cache: false,
+            success: function(msg) {
+              if(msg.status == 'success') {
+                if(msg.flag == 1){
+                  $('.manage_received_requests .leader_receive_request').addClass('leader_reject_user_request');
+                  $('.manage_received_requests .leader_receive_request').removeClass('leader_receive_request');
+                }else if(msg.flag == 0){
+                  $('.manage_received_requests .leader_reject_user_request').addClass('leader_receive_request');
+                  $('.manage_received_requests .leader_reject_user_request').removeClass('leader_reject_user_request');
+                }
+              }
+            }
+        });   
+        
+    });
+
+    $(document).on('click','.leader_reject_user_request',function(){
+				
+				var invite_id = $(this).attr('data-id');
+				var flag_status = $(this).attr('data-status');
+                
+                if(flag_status == 1) {
+                    $('.manage_received_requests #event_request_'+invite_id).html('<div class="common-dropdown accepted"><a href="#" class="btn more-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accepted</a><ul class="dropdown-menu"><li class="clearfix"><a href="javascript:void(0);" data-invite_id="'+invite_id+'" class="undo_invite_response"><i class="icon undo-icon"></i>Undo This Action</a></li></ul></div>');
+                } else {
+                    $('.manage_received_requests #event_request_'+invite_id).html('<div class="common-dropdown rejected"><a href="#" class="btn more-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Rejected</a><ul class="dropdown-menu"><li class="clearfix"><a href="javascript:void(0);" data-invite_id="'+invite_id+'" class="undo_invite_response"><i class="icon undo-icon"></i>Undo This Action</a></li></ul></div>');
+                }
+                
+                var action_file_url = base_url + '/ajax_files/saas_candidate_function.php?action=event_leader_confirm_request_sent';
+
+                $.ajax({
+                    type: "POST",
+                    url: action_file_url,
+                    data: ({'invite_id':invite_id, 'flag_status':flag_status}),
+                    cache: false,
+                    success: function(data) {
+                         $('.accept-reject-request').modal('hide');
+                    }
+                });		
+				
+    });
+    
+    $(document).on('click','.leader_send_invite',function(){
+				
+        $(this).addClass('disabled');
+        var user_id = $(this).attr('data-user_id');
+        var season_id = $(this).attr('data-season_id');
+        var team_id = $(this).attr('data-team_id');
+        var action_url = base_url+'/ajax_files/saas_candidate_function.php?action=event_invite_sent_to_member';
+        $.ajax({
+            type: "POST",
+            url: action_url,
+            data: ({'season_id':season_id, 'to_user_id':user_id, 'team_id':team_id}),
+            success: function(response) {
+                var invite_id = response.invitation_id;
+                var html = '<div class="inner-wrap invite_'+invite_id+'">\
+                          <div class="inner">\
+                            <div class="common-dropdown accepted">\
+                              <a href="#" class="btn more-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Invited</a>\
+                              <ul class="dropdown-menu">\
+                                <li class="clearfix">\
+                                  <a href="javascript:void(0);" data-invite_id="'+invite_id+'" class="cancel_invite_btn"><i class="icon cancel-icon"></i>Cancel Invite</a>\
+                                </li>\
+                              </ul> \
+                            </div> \
+                          </div>\
+                        </div>\
+                        <a href="javascript:void(0);"  data-user_id = "'+user_id+'" data-team_id = "<?php echo $encrypt_team_id; ?>" data-season_id = "'+season_id+'" class="btn button1 invite_to_team_btn_'+invite_id+' hide">Invite To Team</a>';
+                
+                $('#leader_invitation_'+user_id).html(html);
+            }
+        });				
+        
+    });
+    
+   $(document).on('click','.invite_more_participants',function(){
+				
+        var season_id = $('#season_id').val();  
+
+        var action_url = base_url + '/ajax_files/event_team.php?action=invite_more_participant&season_id='+season_id;
+        
+        $.ajax({
+            type: "POST",
+            url: action_url,
+            data: ({'season_id':season_id}),
+            success: function(response) {
+                 $('#invite-participants-form').html(response);
+                 $('#invite-participants-form').modal('show');
+                 Event_Team.addMailInvite();
+            }
+        });				
+        
+    });
+    
+    
+    $(document).on('click','.send_invitation_mail',function(){
+				
+        var season_id = $('#season_id').val();  
+        $('.log_message').hide();
+        var action_url = base_url + '/ajax_files/saas_candidate_function.php?action=event_send_invitation_mail';
+        
+        $.ajax({
+            type: "POST",
+            url: action_url,
+            data: $("#invite_form").serialize()+'&season_id='+season_id,
+            success: function(msg) {
+                    var invitation_cnt = msg.invitation_cnt;
+                    if(msg.status == 'success') {
+                      
+                      var action_file_url = base_url + '/ajax_files/event_team.php?action=event_sent_invitation_success&event_name='+event_name;
+                        $.ajax({
+                            type: "POST",
+                            url: action_file_url,
+                            data: ({'season_id':season_id, 'invitation_cnt':invitation_cnt }),
+                            success: function(data) {
+                               //$('#invite-participants-form').addClass('success');
+                               $('#invite-participants-form').html(data);
+                            }
+                        }); 
+                      
+                    } else {
+                        $( ".log_message" ).html("<span class='error_msg'> "+msg.msg+" </span>").show();
+                    }
+            }
+        });				
+        
+    });
+        
+    $(document).on('keyup','#search-form-name-hackathon input[type="text"]',function() {
+      if($('#search-form-name-hackathon input[type="text"]').val() == ''){
+        $('#search-all-team, #search-form-name-hackathon a.search-close').fadeOut();
+        $('#search-form-name-hackathon').removeClass("active");
+        $("#team-info").data('teamid','');
+        $('.team-block').remove();
+        $('.teams-list #page_number').val(1);
+        Event_Team.LoadAllTeams();  
+      }else{
+        var keyword = $('#search_team_name').val();
+        if(keyword.length<2){
+          return ;
+        }
+        var page = $('#search-form input[name="page"]').val();
+        
+        var season_id = $('#season_id').val();        
+        
+        $.ajax({
+          type: "POST",
+          url: base_url + "/ajax_files/event_team.php?action=search_hackathon_name",
+          data: {'keyword': keyword,season_id:season_id},
+          success: function(data) {
+            if(data.indexOf("no records") > -1) {
+              $('#search-all-team .no-content').show();
+              $('#search-all-team .searched-content').hide();
+            } else {
+              $('#search-all-team .searched-content').html(data);
+              $('#search-all-team .no-content').hide();
+              $('#search-all-team .searched-content').show();             
+            }
+            $('#search-all-team, #search-form-name-hackathon').fadeIn();
+            $('.search-form').addClass("active");
+          }
+        });  
+      }
+    });
+
+    $(document).on('keyup','#search-received_request_form input[type="text"]',function() {
+      if($('#search-received_request_form input[type="text"]').val() == ''){
+        $('#search-received_request, #search-received_request_form a.search-close').fadeOut();
+        $('#search-received_request_form').removeClass("active");
+          $("#received-req-info").data('userid','');
+        $('.team-block').remove();
+        $('.manage-hackathon-team .manage_received_requests #page_number').val(1);
+        Event_Team.LoadReceivedRequest();
+      }else{
+        var keyword = $('#search_team_name').val();
+        if(keyword.length<2){
+          return ;
+        }
+        var page = $('#search-form input[name="page"]').val();
+        
+        var season_id = $('#season_id').val();        
+        
+        $.ajax({
+          type: "POST",
+          url: base_url + "/ajax_files/event_team.php?action=search_received_request_name",
+          data: {'keyword': keyword,season_id:season_id},
+          success: function(data) {
+            if(data.indexOf("no records") > -1) {
+              $('#search-received_request .no-content').show();
+              $('#search-received_request .searched-content').hide();
+            } else {
+              $('#search-received_request .searched-content').html(data);
+              $('#search-received_request .no-content').hide();
+              $('#search-received_request .searched-content').show();             
+            }
+            $('#search-received_request, #search-received_request_form a.search-close').fadeIn();
+            $('.search-form').addClass("active");
+          }
+        });  
+      }
+    });
+    $(document).on('keyup','#search-invitation-sent_form input[type="text"]',function() {
+      if($('#search-invitation-sent_form input[type="text"]').val() == ''){
+        $('#search-invitation-sent, #search-invitation-sent_form a.search-close').fadeOut();
+        $('#search-invitation-sent_form').removeClass("active");
+        $("#invi-sent-info").data('invite_id','');
+        $('.team-block').remove();
+        $('.manage-hackathon-team .manage_invitations_sent #page_number').val(1);
+          Event_Team.LoadInvitationsSent();         
+      }else{
+        var keyword = $('#search_invitaion_name').val();
+        if(keyword.length<2){
+          return ;
+        }
+        var page = $('#search-form input[name="page"]').val();
+        
+        var season_id = $('#season_id').val();        
+        
+        $.ajax({
+          type: "POST",
+          url: base_url + "/ajax_files/event_team.php?action=search_invitation_sent_name",
+          data: {'keyword': keyword,season_id:season_id},
+          success: function(data) {
+            if(data.indexOf("no records") > -1) {
+              $('#search-invitation-sent .no-content').show();
+              $('#search-invitation-sent .searched-content').hide();
+            } else {
+              $('#search-invitation-sent .searched-content').html(data);
+              $('#search-invitation-sent .no-content').hide();
+              $('#search-invitation-sent .searched-content').show();              
+            }
+            $('#search-invitation-sent, #search-invitation-sent_form a.search-close').fadeIn();
+            $('.search-form').addClass("active");
+          }
+        });  
+      }
+    });
+
+    $(document).on('keyup','#search-available-participant_form input[type="text"]',function() {
+      if($('#search-available-participant_form input[type="text"]').val() == ''){
+        $('#search-available-participant, #search-available-participant_form a.search-close').fadeOut();
+        $('#search-available-participant_form').removeClass("active");
+        $("#avail-participant-info").data('user_id','');
+        $('.team-block').remove();
+        $('.manage-hackathon-team .manage_available_participants #page_number').val(1);
+        Event_Team.LoadAvailableParticipants();   
+      }else{
+        var keyword = $('#search_available_name').val();
+        if(keyword.length<2){
+          return ;
+        }
+        var page = $('#search-form input[name="page"]').val();
+        
+        var season_id = $('#season_id').val();        
+        
+        $.ajax({
+          type: "POST",
+          url: base_url + "/ajax_files/event_team.php?action=search_available_participant_name",
+          data: {'keyword': keyword,season_id:season_id},
+          success: function(data) {
+            if(data.indexOf("no records") > -1) {
+              $('#search-available-participant .no-content').show();
+              $('#search-available-participant .searched-content').hide();
+            } else {
+              $('#search-available-participant .searched-content').html(data);
+              $('#search-available-participant .no-content').hide();
+              $('#search-available-participant .searched-content').show();              
+            }
+            $('#search-available-participant, #search-available-participant_form a.search-close').fadeIn();
+            $('.search-form').addClass("active");
+          }
+        });  
+      }
+    });
+
+    $(document).on('keyup','#search-join_request_form input[type="text"]',function() {
+      if($('#search-join_request_form input[type="text"]').val() == ''){
+        $('#search-join_request, #search-join_request_form a.search-close').fadeOut();
+        $('#search-join_request_form').removeClass("active");
+        $("#req-join-info").data('teamid','');
+        $('.team-block').remove();
+        
+        var tabOpen = $(".join_a_team .active").children('a').data('id');
+        if(tabOpen=='request_sent'){
+          $('.request_sent #page_number').val(1);
+          Event_Team.LoadAllRequestSent();          
+        }else if(tabOpen=='invitation_receive'){
+          $('.invitation_receive #page_number').val(1);       
+          Event_Team.LoadAllInvitationReceived();
+        }else if(tabOpen=='available_team'){
+          $('.available_team #page_number').val(1);
+          Event_Team.LoadAllAvailableTeams();
+        }   
+      }else{
+        var keyword = $('#search_join_name').val();
+        if(keyword.length<2){
+          return ;
+        }       
+        var tabOpen = $(".join_a_team .active").children('a').data('id');
+        var season_id = $('#season_id').val();        
+        
+        $.ajax({
+          type: "POST",
+          url: base_url + "/ajax_files/event_team.php?action=search_common_team_name",
+          data: {'keyword': keyword,season_id:season_id,tabOpen:tabOpen},
+          success: function(data) {
+            if(data.indexOf("no records") > -1) {
+              $('#search-join_request .no-content').show();
+              $('#search-join_request .searched-content').hide();
+            } else {
+              $('#search-join_request .searched-content').html(data);
+              $('#search-join_request .no-content').hide();
+              $('#search-join_request .searched-content').show();             
+            }
+            $('#search-join_request, #search-join_request_form a.search-close').fadeIn();
+            $('.search-form').addClass("active");
+          }
+        });  
+      }
+    });
+
+    $(document).on("click","#search-all-team li",function(){    
+      
+      var team_id = $(this).data('teamid');
+      var name =  $(this).data('teamname');
+      $("#team-info").data('teamid',team_id);
+      $("#team-info").data('name',name);      
+      $('.team-block').remove();
+      $('.teams-list #page_number').val(1); 
+      Event_Team.LoadAllTeams();        
+      
+      $("#search_team_name").val(name);
+      $('#search-all-team .searched-content').hide();
+      $('#search-all-team').hide();
+    });
+
+    $(document).on("click","#search-received_request li",function(){    
+      
+      var user_id = $(this).data('user');
+      var name =  $(this).data('name');
+      $("#received-req-info").data('userid',user_id);
+      $("#received-req-info").data('name',name);      
+      $('.team-block').remove();    
+      $('.manage-hackathon-team .manage_received_requests #page_number').val(1);
+      Event_Team.LoadReceivedRequest();       
+      
+      $("#search_team_name").val(name);
+      $('#search-received_request .searched-content').hide();
+      $('#search-received_request').hide();
+    });
+    
+      $(document).on("click","#search-invitation-sent li",function(){   
+      
+      var invitationid = $(this).data('invitationid');
+      var name =  $(this).data('name');
+      $("#invi-sent-info").data('invite_id',invitationid);
+      $("#invi-sent-info").data('name',name);     
+      $('.team-block').remove();    
+      $('.manage-hackathon-team .manage_invitations_sent #page_number').val(1);
+      Event_Team.LoadInvitationsSent();       
+      
+      $("#search_invitaion_name").val(name);
+      $('#search-invitation-sent .searched-content').hide();
+      $('#search-invitation-sent').hide();
+    });
+    
+
+      $(document).on("click","#search-available-participant li",function(){   
+      
+      var user_id = $(this).data('userid');
+      var name =  $(this).data('name');
+      $("#avail-participant-info").data('user_id',user_id);
+      $("#avail-participant-info").data('name',name);     
+      $('.team-block').remove();    
+      $('.manage-hackathon-team .manage_available_participants #page_number').val(1); 
+      Event_Team.LoadAvailableParticipants();       
+      
+      $("#search_available_name").val(name);
+      $('#search-available-participant .searched-content').hide();
+      $('#search-available-participant').hide();
+    });
+
+    $(document).on("click","#search-join_request li",function(){    
+      
+      var team_id = $(this).data('teamid');
+      var name =  $(this).data('name');
+      $("#req-join-info").data('teamid',team_id);
+      $("#req-join-info").data('name',name);      
+      $('.team-block').remove();      
+      var tabOpen = $(".join_a_team .active").children('a').data('id');
+      if(tabOpen=='request_sent'){
+        $('.request_sent #page_number').val(1);        
+        Event_Team.LoadAllRequestSent();          
+      }else if(tabOpen=='invitation_receive'){
+        $('.invitation_receive #page_number').val(1);       
+        Event_Team.LoadAllInvitationReceived();
+      }else if(tabOpen=='available_team'){
+        $('.available_team #page_number').val(1);
+        Event_Team.LoadAllAvailableTeams();
+      }else{
+        return ;
+      }     
+      
+      $("#search_join_name").val(name);
+      $('#search-join_request .searched-content').hide();
+      $('#search-join_request').hide();
+    });
+
+    $(document).on("click",".show_filters",function(){
+        var filterType = $(this).attr('data');
+        var season_id = $("#season_id").val();
+        var dataValue = $(this).attr('data-value');
+        
+        if(dataValue == 1){
+            $(this).attr('data-value',2);
+            Event_Team.showTeamFilters(this,season_id,filterType);      
+        }else{
+            if($(this).parents('.clearfix').find('.hackathon-filters').is(':visible')){
+                $(this).parents('.clearfix').find('.hackathon-filters').hide();
+            }else{
+                $(this).parents('.clearfix').find('.hackathon-filters').show();
+            }            
+        }        
+    });
+
+    $(document).on("keyup",".searchable-input",function(){
+        //$(this).parents(".sidebar-widget").find("li").removeClass('match');
+        //$(this).parents(".sidebar-widget").find(".show-more-list").hide();
+        var cur_val=$.trim($(this).val());
+        var containing_li=$(this).parents(".popover-content").find("span");
+        $(containing_li).each(function(){
+        var itemName=$(this).find("input[type='checkbox']").val();
+        itemName=itemName.toLowerCase();
+        var searchTrueFlag = itemName.indexOf(cur_val.toLowerCase());
+        if(searchTrueFlag==-1){
+            $(this).hide();
+            $(this).removeClass('match');
+        }
+        else{
+            $(this).show();        
+            var label_html=$(this).find("label").html();
+        }
+        });
+        if(cur_val==''){
+         $(this).parents(".popover-content").find("span").show();         
+         
+         $(this).parents(".popover-content").find("li:eq(7)").nextAll().slideUp(500);
+        } 
+    });
+
+    $(document).on("click",".clearTextFilter",function(){
+        $(this).parents('.popover-content').find('.searchable-input').val('');  
+        $(this).parents('.popover-content').find('.searchable-input').keyup();
+        $(this).parents('.form-group').find('.custom-dropdown span').html('Select');
+        $(this).parents('.popover-content').find(".options-list input[type='checkbox']").prop('checked',false);
+        $(this).parents('.popover-content').find(".options-list input[type='checkbox']").removeClass('match');
+    });
+    $(document).on("click",".clearFilter",function(){
+        $(this).parents('.hackathon-filters').find('.clearTextFilter').click();
+        var filterPage = $(this).attr('data');        
+        $('.team-block').remove(); 
+        $('.no-content-found').remove();     
+        $("#no_more_user").hide();
+        $(this).addClass('disabled');
+        $(this).siblings('.ApplyFilter').addClass('disabled');
+        if(filterPage == 'all_teams'){            
+          $(".hackathon-team input[type='hidden']").val('');
+          $('.teams-list #page_number').val(1);
+            $instance.LoadAllTeams();
+        }else if(filterPage == 'received_requests'){          
+            $(".hackathon-received-requests input[type='hidden']").val('');
+            $('.manage-hackathon-team .manage_received_requests #page_number').val(1);
+            $instance.LoadReceivedRequest();
+        }else if(filterPage == 'invitation_sent'){            
+            $(".hackathon-invitation-sent input[type='hidden']").val('');
+            $('.manage-hackathon-team .manage_invitations_sent #page_number').val(1);
+            $('.manage-hackathon-team .manage_invitations_sent #no_more_user').hide();
+            $instance.LoadInvitationsSent();
+        }else if(filterPage =='available_participants'){            
+            $(".hackathon-available-participants input[type='hidden']").val('');
+            $('.manage-hackathon-team .manage_available_participants #page_number').val(1); 
+            $instance.LoadAvailableParticipants();
+        }
+
+    });
+    $(document).on("click",'.options-list input[type="checkbox"]',function(){
+        if($(this).hasClass('match')){
+            $(this).removeClass("match");
+        }else{
+            $(this).addClass("match");                        
+        }
+        if($(".disabledFilters").hasClass('disabled')){
+            $(".disabledFilters").removeClass('disabled')
+        }
+        var textValue = $(this).parents('.form-group').find('.custom-dropdown span').text();
+        
+        if(textValue=='Select'){
+            var count = 1;
+        }else{
+            var textCount = textValue.split(" ");
+            if($(this).hasClass("match")){
+                var count = Number(textCount[0])+Number(1);  
+            }else{
+                var count = Number(textCount[0])-Number(1);  
+            }
+            
+        }
+        $(this).parents('.form-group').find('.custom-dropdown span').html('');
+        $(this).parents('.form-group').find('.custom-dropdown span').html(count + " Selected");
+    });
+
+    $(document).on("click",'.ApplyFilter',function(event){
+        
+        var locationSearch = $(this).parent().find('.locationSearch');
+        var companySearch = $(this).parent().find('.companySearch');
+        var skillsSearch = $(this).parent().find('.skillSearch');
+        var location=[];
+        var company=[];
+        var skills=[];
+
+        var filterPage = $(this).attr('data');        
+
+        $('.team-block').remove();       
+        $('.no-content-found').remove();
+
+        locationSearch.find('span').each(function(){
+          if($(this).find("input[type='checkbox']").hasClass('match')){
+              var itemName=$(this).find("input[type='checkbox']").val();                  
+              location.push(itemName);      
+          }
+        });
+        companySearch.find('span').each(function(){
+            if($(this).find("input[type='checkbox']").hasClass('match')){
+                var itemName=$(this).find("input[type='checkbox']").val();      
+                company.push(itemName);        
+            }            
+        });
+        skillsSearch.find('span').each(function(){
+            if($(this).find("input[type='checkbox']").hasClass('match')){
+                var itemName=$(this).find("input[type='checkbox']").val();      
+                skills.push(itemName);      
+            }
+        });
+
+        $(this).siblings('.location').val(JSON.stringify(location));
+        $(this).siblings('.company').val(JSON.stringify(company));
+        $(this).siblings('.skills').val(JSON.stringify(skills));
+
+        if(filterPage == 'all_teams'){
+            $('.teams-list #page_number').val(1);
+            $instance.LoadAllTeams(location,company,skills);
+        }else if(filterPage == 'received_requests'){
+          $('.manage-hackathon-team .manage_received_requests #page_number').val(1);
+            $instance.LoadReceivedRequest(location,company,skills);
+        }else if(filterPage == 'invitation_sent'){
+            $('.manage-hackathon-team .manage_invitations_sent #page_number').val(1);
+            $instance.LoadInvitationsSent(location,company,skills);
+        }else if(filterPage =='available_participants'){
+            $('.manage-hackathon-team .manage_available_participants #page_number').val(1); 
+            $instance.LoadAvailableParticipants(location,company,skills);
+        }
+        
+    });
+	};
+	
+    $instance.addMailInvite = function(){
+      $.getScript(theme_url+"/javascript/multiple-emails.js")
+			.done(function () {
+				$('#invite_email_ids').multiple_emails({position: "top"});
+				
+				//Shows the value of the input device, which is in JSON format
+				$('#current_emailsBS').text($('#invite_email_id').val());
+				$('#invite_email_id').change( function(){
+					$('#current_emailsBS').text($(this).val());
+				});
+				
+			})
+			.fail(function () {
+				console.log('multiple-emails not loaded');
+			});
+
+	};
+    
+    $instance.LoadMoreSkillsList = function() {  
+    
+     $(".teams-list .team-block").each( function(){
+			var hiddenSkiilsCount = $(this).find(".skills-list a").length - 6;
+			var totalSkiilsCount = $(this).find(".skills-list a").length;
+			
+			if(totalSkiilsCount <= 6){
+				$(this).find(".show-hidden-skills").hide();
+			}else{
+				$(this).find(".show-hidden-skills").show().html("+ " + hiddenSkiilsCount + " More");
+			}
+			
+			$(this).find(".skills-list a:eq(5)").nextAll().hide();
+		});
+        
+   };
+	
+	$instance.LoadAllTeams = function(location,company,skills) {  
+		    var page = $('.teams-list #page_number').val();
+        var season_id = $('.teams-list #season_id').val();                    
+
+        var team_id = $("#team-info").data('teamid');
+        if(typeof team_id == 'undefined' || team_id == '') { team_id = ''; }
+        if(typeof location == 'undefined' || location == ''){  location = ''; }
+        if(typeof company == 'undefined' || company == ''){  company = ''; }
+        if(typeof skills == 'undefined' || skills == ''){  skills = ''; }
+        if(location =='' && company =='' && skills==''){
+            var loc =$(".hackathon-team .location").val();
+            var com = $(".hackathon-team .company").val();
+            var ski = $(".hackathon-team .skills").val();
+            if(loc!='' && typeof loc !='undefined')
+            location =  $.parseJSON(loc);
+            if(com!='' && typeof com !='undefined')
+            company =  $.parseJSON(com);
+            if(ski!='' && typeof ski !='undefined')
+            skills =  $.parseJSON(ski);
+        }
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=load_team_members&season_id='+season_id+'&page_no=' + page+'&team_id='+team_id+'&location='+location+'&company='+company+'&skills='+skills;
+        
+        //$('.teams-list #ajax_previous_contest').html(loaderHtml).show();
+
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({}),
+            cache: false,
+            success: function(data) {
+                data = $.trim(data);
+                if (data == 'no_record') {
+                    $('.teams-list #no_more_user').html('No more teams to display.').show();
+                    $('.teams-list .ViewMore').hide();
+          					$('.teams-list #ajax_previous_contest').html('');
+                } else {
+                     $("input[type='hidden'][name='allTeamsNumFound']").remove();
+                     $('.teams-list .ajax_previous_contest').html('');
+                     $(data).insertBefore('.teams-list .ajax_previous_contest');
+                    var TotalNumFound = $("#allTeamsNumFound").val();
+                    if(TotalNumFound>0){
+                        var countString = "(" + TotalNumFound + ")";
+                        $('.hackathon-box').find('#all_teams_count').html(countString);  
+                    }
+                    $('.teams-list #ajax_previous_contest').hide();
+                    $("#hackathon-content-box").show();
+                    if(team_id ==''){
+                      if(TotalNumFound > page*5){
+                          $('.teams-list .view-all-block').show();    
+                          $('.teams-list .ViewMore').show();    
+                      }else{
+                          $('.teams-list .view-all-block').hide();    
+                          $('.teams-list .ViewMore').hide();    
+                      }  
+                    }else{
+                      $('.teams-list .view-all-block').hide();    
+                      $('.teams-list #no_more_user').hide();    
+                    }
+                    page++;
+                    $('.teams-list #page_number').val(page);
+                    if($("#contentNotFoundallteam").val()==1){
+                       $('.teams-list .view-all-block').hide();   
+                    }
+                }
+            }
+        });
+	};
+    
+    $instance.LoadAllRequestSent = function() {   
+		    var page = $('.request_sent #page_number').val();
+        var season_id = $('.team-manage-request #season_id').val();                    
+        var team_id = $("#req-join-info").data('teamid');
+        if(typeof team_id == 'undefined' || team_id == '') { team_id = ''; }
+        
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=member_request_sent&season_id='+season_id+'&page_no=' + page+'&team_id='+team_id;
+        
+        //$('.request_sent #ajax_previous_contest').html(loaderHtml).show();
+
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({}),
+            cache: false,
+            success: function(data) {
+                data = $.trim(data);
+                
+                if (data == 'no_record') {
+                    $('.request_sent #no_more_user').html('No more request sent to display.').show();
+                    $('.request_sent .ViewMore').hide();
+          					$('.request_sent #ajax_previous_contest').html('');
+                } else {
+                     $("input[type='hidden'][name='numFoundressent']").remove();  
+                     $('.request_sent .ajax_previous_contest').html('');
+                     $(data).insertBefore('.request_sent .ajax_previous_contest');
+                    
+                    $('.request_sent #ajax_previous_contest').hide();
+                    //$('#search-join_request_form').show();
+                    if(team_id==''){
+                      var TotalNumFound = $("#numFoundressent").val();
+                      if(TotalNumFound > page*5){
+                          $('.request_sent .view-all-block').show();    
+                          $('.request_sent .ViewMore').show();      
+                      }else{
+                          $('.request_sent .view-all-block').hide();    
+                          $('.request_sent .ViewMore').hide();      
+                      }                      
+                    }else{
+                        $('.request_sent .view-all-block').hide();    
+                        $('.request_sent #no_more_user').hide();    
+                    }
+                    page++;
+                    $('.request_sent #page_number').val(page);
+                    if($("#contentNotFoundressent").val()==2){
+                        $('#search-join_request_form').show();
+                    }else{
+                        $('#search-join_request_form').hide();
+                    }
+                }                
+            }
+        });
+	};
+    
+    
+    $instance.LoadAllInvitationReceived = function() {   
+		var page = $('.invitation_receive #page_number').val();
+        var season_id = $('.team-manage-request #season_id').val();                    
+        var team_id = $("#req-join-info").data('teamid');
+        if(typeof team_id == 'undefined' || team_id == '') { team_id = ''; }
+        
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=member_invitation_receive&season_id='+season_id+'&page_no=' + page+'&team_id='+team_id;
+        
+        //$('.invitation_receive #ajax_previous_contest').html(loaderHtml).show();
+
+        if(typeof requestSent === 'undefined') { requestSent = false; }
+			
+			if(!requestSent) { 
+			
+                requestSent = true;
+                
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({}),
+            cache: false,
+            success: function(data) {
+                data = $.trim(data);
+                requestSent = false;
+                if (data == 'no_record') {
+                    $('.invitation_receive #no_more_user').html('No more invitations received to display.').show();
+                    $('.invitation_receive .ViewMore').hide();
+          					$('.invitation_receive #ajax_previous_contest').html('');
+                } else {
+                    $("input[type='hidden'][name='invitationReceiveNumFound']").remove();  
+                    $('.invitation_receive .ajax_previous_contest').html('');
+                    $(data).insertBefore('.invitation_receive .ajax_previous_contest');
+                    var TotalNumFound = $("#invitationReceiveNumFound").val();                            
+                    
+                    $('.invitation_receive #ajax_previous_contest').hide();
+                    $('#search-join_request_form').show();
+                    if(team_id==''){
+                      if(TotalNumFound > page*5){ 
+                          $('.invitation_receive .view-all-block').show();
+                          $('.invitation_receive .ViewMore').show();  
+                      }else{
+                          $('.invitation_receive .view-all-block').hide();
+                          $('.invitation_receive .ViewMore').hide();
+                      }                      
+                    }else{
+                        $('.invitation_receive .view-all-block').hide();
+                        $('.invitation_receive #no_more_user').hide();
+                    }
+                    page++;
+                    $('.invitation_receive #page_number').val(page);                    
+                    if($("#contentNotFoundInvReq").val()==2){
+                        $('#search-join_request_form').show();
+                    }else{
+                        $('#search-join_request_form').hide();
+                    }
+                }
+            }
+        });
+    }
+	};
+    
+    
+    $instance.LoadAllAvailableTeams = function() {   
+		var page = $('.available_team #page_number').val();
+        var season_id = $('.team-manage-request #season_id').val();                    
+        var team_id = $("#req-join-info").data('teamid');
+        if(typeof team_id == 'undefined' || team_id == '') { team_id = ''; }        
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=member_available_team&season_id='+season_id+'&page_no=' + page+'&team_id='+team_id;
+        
+        //$('.available_team #ajax_previous_contest').html(loaderHtml).show();
+
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({}),
+            cache: false,
+            success: function(data) {
+                data = $.trim(data);
+                if (data == 'no_record') {
+                    $('.available_team #no_more_user').html('No more invitations received to display.').show();
+                    $('.available_team .ViewMore').hide();
+          					$('.available_team #ajax_previous_contest').html('');
+                } else {
+                    $("input[type='hidden'][name='memberAvailableNumFound']").remove();
+                    $('.available_team .ajax_previous_contest').html('');
+                    $(data).insertBefore('.available_team .ajax_previous_contest');                   
+                    
+                    var TotalNumFound = $("#memberAvailableNumFound").val();
+                    
+                    $('.available_team #ajax_previous_contest').hide();
+                    $('#search-join_request_form').show();
+                    if(team_id==''){
+                      if(TotalNumFound > page*5){
+                          $('.available_team .view-all-block').show();
+                          $('.available_team .ViewMore').show(); 
+                      }else{
+                          $('.available_team .view-all-block').hide();
+                          $('.available_team .ViewMore').hide(); 
+                      }                      
+                    }else{
+                      $('.available_team .view-all-block').hide();
+                      $('.available_team #no_more_user').hide();
+                    }
+                    page++;
+                    $('.available_team #page_number').val(page);
+                    if($("#contentNotFound").val()==2){
+                        $('#search-join_request_form').show();
+                    }else{
+                        $('#search-join_request_form').hide();
+                    }                    
+                }
+            }
+        });
+	};
+    
+    $instance.LoadManageMyTeam = function() {   
+		
+        var season_id = $('#season_id').val();                    
+       
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=manage_my_team&season_id='+season_id;
+        
+        //$('.manage-hackathon-team .manage_my_team').html(loaderHtml).show();
+
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            cache: false,
+            data: ({}),
+            success: function(data) {
+                data = $.trim(data);
+                $('.manage-hackathon-team .manage_my_team').html(data);
+                $('.manage-hackathon-team .manage_my_team').show();
+                sessionStorage.setItem("manage_team", "true");
+            }
+        });
+	};
+    
+    
+    $instance.LoadReceivedRequest = function(location,company,skills) {   
+		var page = $('.manage-hackathon-team .manage_received_requests #page_number').val();
+        var season_id = $('#season_id').val();                    
+        var user_id = $("#received-req-info").data('userid');
+        if(typeof user_id == 'undefined' || user_id == '') { user_id = ''; }
+        if(typeof location == 'undefined' || location == ''){  location = ''; }
+        if(typeof company == 'undefined' || company == ''){  company = ''; }
+        if(typeof skills == 'undefined' || skills == ''){  skills = ''; }
+        if(location =='' && company =='' && skills==''){
+            var loc =$(".hackathon-received-requests .location").val();
+            var com = $(".hackathon-received-requests .company").val();
+            var ski = $(".hackathon-received-requests .skills").val();
+            if(loc!='' && typeof loc !='undefined'){location =  $.parseJSON(loc);}
+            
+            if(com!='' && typeof com !='undefined'){company =  $.parseJSON(com);}
+            
+            if(ski!='' && typeof ski!='undefined'){skills =  $.parseJSON(ski);}
+            
+        }
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=manage_receive_request&season_id='+season_id+'&page_no=' + page+'&from_user_id='+user_id+'&location='+location+'&company='+company+'&skills='+skills;
+          
+        //$('.manage-hackathon-team .manage_received_requests #ajax_previous_contest').html(loaderHtml).show();
+
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({}),
+            cache: false,
+            success: function(data) {
+                data = $.trim(data);
+                
+                if (data == 'no_record') {
+                    $('.manage-hackathon-team .manage_received_requests #no_more_user').html('No more request sent to display.').show();
+                    $('.manage-hackathon-team .manage_received_requests .ViewMore').hide();
+					          $('.manage-hackathon-team .manage_received_requests #ajax_previous_contest').html('');
+                } else {
+                    $("input[type='hidden'][name='receivedRequestCount']").remove();
+                    $('.manage-hackathon-team .manage_received_requests .ajax_previous_contest').html('');
+                    $(data).insertBefore('.manage-hackathon-team .manage_received_requests .ajax_previous_contest');
+                    
+                    $('.manage-hackathon-team .manage_received_requests #ajax_previous_contest').hide();
+                    var TotalNumFound = $("#receivedRequestCount").val();
+                    if(TotalNumFound>0){
+                        var countString = "(" + TotalNumFound + ")";
+                    $('.manage_received_requests').find('#received_req_count').html(countString);  
+                    }
+                    
+                    if(user_id == ''){
+                        if(TotalNumFound > page*5){
+                            $('.manage-hackathon-team .manage_received_requests .view-all-block').show();    
+                            $('.manage-hackathon-team .manage_received_requests .ViewMore').show();   
+                        }else{
+                            $('.manage-hackathon-team .manage_received_requests .view-all-block').hide();    
+                            $('.manage-hackathon-team .manage_received_requests .ViewMore').hide();   
+                        }                        
+                    }else{
+                      $('.manage-hackathon-team .manage_received_requests .view-all-block').hide();   
+                      $('.manage-hackathon-team .manage_received_requests #no_more_user').hide();   
+                    }                    
+                    page++;
+                    $('.manage-hackathon-team .manage_received_requests #page_number').val(page);
+                    $instance.LoadMoreSkillsList();                    
+                }
+                
+                
+            }
+        });
+	};
+    
+    $instance.LoadInvitationsSent = function(location,company,skills) {  
+		    var page = $('.manage-hackathon-team .manage_invitations_sent #page_number').val();
+        var season_id = $('#season_id').val();                    
+        var invite_id = $("#invi-sent-info").data('invite_id');
+        if(typeof invite_id == 'undefined' || invite_id == '') { invite_id = ''; }
+        if(typeof location == 'undefined' || location == ''){  location = ''; }
+        if(typeof company == 'undefined' || company == ''){  company = ''; }
+        if(typeof skills == 'undefined' || skills == ''){  skills = ''; }
+        if(location =='' && company =='' && skills==''){
+            var loc =$(".hackathon-invitation-sent .location").val();
+            var com = $(".hackathon-invitation-sent .company").val();
+            var ski = $(".hackathon-invitation-sent .skills").val();
+            if(loc!='' && typeof loc !='undefined')
+            location =  $.parseJSON(loc);
+            if(com!='' && typeof com !='undefined')
+            company =  $.parseJSON(com);
+            if(ski!='' && typeof ski !='undefined')
+            skills =  $.parseJSON(ski);
+        }
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=manage_invitations_sent&season_id='+season_id+'&page_no=' + page+'&invite_id='+invite_id+'&location='+location+'&company='+company+'&skills='+skills;
+        
+        //$('.manage-hackathon-team .manage_invitations_sent #ajax_previous_contest').html(loaderHtml).show();
+
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({}),
+            cache: false,
+            success: function(data) {
+                data = $.trim(data);
+                
+                if (data == 'no_record') {
+                    $('.manage-hackathon-team .manage_invitations_sent #no_more_user').html('No more request sent to display.').show();
+                    $('.manage-hackathon-team .manage_invitations_sent .ViewMore').hide();
+				          	$('.manage-hackathon-team .manage_invitations_sent #ajax_previous_contest').html('');
+                } else {                                     
+                     $("input[type='hidden'][name='invitationSentCount']").remove();
+                     $('.manage-hackathon-team .manage_invitations_sent #no_more_user').html('').hide();
+                     $('.manage-hackathon-team .manage_invitations_sent .ajax_previous_contest').html('');
+                     $(data).insertBefore('.manage-hackathon-team .manage_invitations_sent .ajax_previous_contest');
+                   
+                    var TotalNumFound = $("#invitationSentCount").val();
+                    if(TotalNumFound >0){
+                        var countString = "(" + TotalNumFound + ")";
+                        $('.manage_invitations_sent').find('#h_invitation_sent_cnt').html(countString);   
+                    }
+                    
+                    $('.manage-hackathon-team .manage_invitations_sent #ajax_previous_contest').hide();
+                    if(invite_id==''){
+                        
+                        if(TotalNumFound > page*5){
+                            $('.manage-hackathon-team .manage_invitations_sent .view-all-block').show();    
+                            $('.manage-hackathon-team .manage_invitations_sent .ViewMore').show();    
+                        }else{
+                            $('.manage-hackathon-team .manage_invitations_sent .view-all-block').hide();    
+                            $('.manage-hackathon-team .manage_invitations_sent .ViewMore').hide();    
+                        }                        
+                    }else{
+                        $('.manage-hackathon-team .manage_invitations_sent .view-all-block').hide();    
+                        $('.manage-hackathon-team .manage_invitations_sent #no_more_user').hide();    
+                    }
+                    page++;
+                    $('.manage-hackathon-team .manage_invitations_sent #page_number').val(page);
+                }
+                /*if(page == 2) {
+                    $(".manage_invitations_sent #h_invitation_sent_cnt").text('('+$('#f_invite_sent_cnt').val()+')');
+                }*/
+                
+                if($('#f_invite_sent_cnt').val() > 0) {
+                    $('.invite_more_participants').show();
+                }
+            }
+        });
+	};
+    
+    $instance.LoadAvailableParticipants = function(location,company,skills) {  
+		var page = $('.manage-hackathon-team .manage_available_participants #page_number').val();
+        var season_id = $('#season_id').val();                    
+        var user_id = $("#avail-participant-info").data('user_id');
+        if(typeof user_id == 'undefined' || user_id == '') { user_id = ''; }
+        if(typeof location == 'undefined' || location == ''){  location = ''; }
+        if(typeof company == 'undefined' || company == ''){  company = ''; }
+        if(typeof skills == 'undefined' || skills == ''){  skills = ''; }
+        if(location =='' && company =='' && skills==''){
+            var loc =$(".hackathon-available-participants .location").val();
+            var com = $(".hackathon-available-participants .company").val();
+            var ski = $(".hackathon-available-participants .skills").val();
+            if(loc!='' && typeof loc != 'undefined')
+            location =  $.parseJSON(loc);
+            if(com!='' && typeof com !='undefined')
+            company =  $.parseJSON(com);
+            if(ski!='' && typeof ski !='undefined')
+            skills =  $.parseJSON(ski);
+        }
+        var action_file_url = base_url + '/ajax_files/event_team.php?action=manage_available_participants&season_id='+season_id+'&page_no=' + page+'&user_id='+user_id+'&location='+location+'&company='+company+'&skills='+skills;
+        
+        //$('.manage-hackathon-team .manage_available_participants #ajax_previous_contest').html(loaderHtml).show();
+
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({}),
+            cache: false,
+            success: function(data) {
+                data = $.trim(data);
+                
+                if (data == 'no_record') {
+                    $('.manage-hackathon-team .manage_available_participants #no_more_user').html('No More participants to display.').show();
+                    $('.manage-hackathon-team .manage_available_participants .ViewMore').hide();
+					          $('.manage-hackathon-team .manage_available_participants #ajax_previous_contest').html('');
+                } else {
+                    $("input[type='hidden'][name='availableParticipantsNumFound']").remove();
+                    $('.manage-hackathon-team .manage_available_participants #no_more_user').html('').hide();
+                    $('.manage-hackathon-team .manage_available_participants .ajax_previous_contest').html('');
+                    $(data).insertBefore('.manage-hackathon-team .manage_available_participants .ajax_previous_contest');
+                    var TotalNumFound = $("#availableParticipantsNumFound").val();
+                    if(TotalNumFound >0){
+                        var countString = "(" + TotalNumFound + ")";
+                        $('.manage_available_participants').find('#avaialableParticipants').html(countString);   
+                    }                    
+                    $('.manage-hackathon-team .manage_available_participants #ajax_previous_contest').hide();
+                    if(user_id == ''){
+                        if(TotalNumFound > page*5){
+                            $('.manage-hackathon-team .manage_available_participants .view-all-block').show();
+                            $('.manage-hackathon-team .manage_available_participants .ViewMore').show();    
+                        }else{
+                            $('.manage-hackathon-team .manage_available_participants .view-all-block').hide();
+                            $('.manage-hackathon-team .manage_available_participants .ViewMore').hide();    
+                        }
+                    }else{
+                      $('.manage-hackathon-team .manage_available_participants .view-all-block').hide();
+                      $('.manage-hackathon-team .manage_available_participants #no_more_user').hide();    
+                    }
+                    page++;
+                    $('.manage-hackathon-team .manage_available_participants #page_number').val(page);
+                    $instance.LoadMoreSkillsList();                    
+                }        
+                
+            }
+        });
+	};
+	
+	$instance.showTeamFilters = function(current,season_id,filterType){
+      var current = current;
+      if(typeof filterType == 'undefined' || filterType == '') { filterType = 'all_teams'; }
+      var action_file_url = base_url + '/ajax_files/event_team.php?action=show_team_filters&season_id='+season_id+'&type='+filterType;
+   
+        $.ajax({
+            type: "GET",
+            url: action_file_url,
+            data: ({}),
+            cache: false,
+            success: function(data) {
+                data = $.trim(data);
+                $(current).parents('.clearfix').find(".hackathon-filters-div").html(data);
+                $(current).parents('.clearfix').find(".hackathon-filters").show();
+            }
+      });      
+  } 
+}; 

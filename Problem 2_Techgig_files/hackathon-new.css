@@ -1,0 +1,564 @@
+/*--- Container Wrap ---*/
+.hackathon-specific #container-wrap { padding-top:0 !important;}
+
+/*--- Footer ---*/
+.hackathon-specific #footer { margin-top:40px;}
+
+/*--- Content ---*/
+.hackathon-specific #content .section-footer { padding-top:0;}
+
+/*--- Header ---*/
+.hackathon-specific #header { background:none; box-shadow:none; position:absolute !important;}
+.hackathon-specific #header .user-area .avatar-pic { font-size:14px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; min-width:150px; text-align:right;}
+.hackathon-specific #header .user-area .avatar-pic img { margin-right:4px;}
+.hackathon-specific #header .login-signup-links a { color:#fff;}
+
+/*--- Footer --- */
+.hackathon-specific #footer { padding-top:24px;}
+.hackathon-specific #footer .inner-footer { margin-top:24px;}
+.hackathon-specific #footer p { font-size:14px; line-height:20px;}
+.hackathon-specific #footer .right-logo p {float:right; width:150px;}
+.hackathon-specific #footer .right-logo img { margin-top:8px; width:140px;}
+
+/*--- Hackathon Banner ---*/
+#hackathon-tg-banner { height:234px; padding:0; background-position:center center; }
+
+/*--- Active User Status --- */
+.active-user-status {border-radius: 6px; background-color: #ffffff; box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1); border: solid 1px #c2c2c2; position:fixed; bottom:40px; width:731px; margin-left:-5px; padding:0 5px; z-index:100; display:none;}
+.active-user-status .table1 tr td { padding-top:11px; padding-bottom:11px; font-weight:600; color:#19171a;}
+.active-user-status .table1 tr td.name a { color:#19171a;}
+
+/*--- No Content Found ---*/
+.no-content-found { height:auto; margin:0 auto 24px;}
+.no-content-found .wrapper { height:200px;}
+.no-content-found p { color:#424242;}
+.no-content-found .btn { min-width:184px; vertical-align:bottom;}
+.hackathon-leaderboard .no-content-found .btn { min-width:120px;}
+.no-content-found .button2 { margin-top:8px;}
+
+/*--- Multi Mail Box ---*/
+.multi-email-box { height:130px;}
+.multi-email-box .multiple_emails-container { height:90px;}
+#invite-participants-form .multi-email-box .multiple_emails-container { border:none;}
+
+/*--- Form1 ---*/
+.form1 textarea.characters-limit { padding-right:12px;}
+
+/*--- Hackathon Box ---*/
+.hackathon-box { background:#fff; border:1px solid #dadada; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.09); border-radius:3px; margin-bottom:16px; }
+.hackathon-box.padding {padding:16px;}
+#content .hackathon-box .section-footer {padding:16px;}
+/* .hackathon-box .post h5 { margin-bottom:8px;}
+.hackathon-box .post ul, .hackathon-box .post ol  { padding-left:14px;}
+.hackathon-box .post ul li, .hackathon-box .post ol li  { padding-left:0;} */
+
+/*--- Hackathon Short Info --- */
+#hackathon-short-info { position:relative; margin-top:-24px;}
+#hackathon-short-info .container { position:relative; z-index:10; margin-top:-24px;}
+#hackathon-short-info .register-now-btn { display:inline-block; width:auto; font-size:14px; text-transform:capitalize;}
+#hackathon-short-info .company-logo { width:160px; height:80px; text-align:center; float:left; line-height:80px;  }
+#hackathon-short-info .company-logo img { max-width:160px; max-height:80px;}
+#hackathon-short-info .details  { margin-left:184px;}
+#hackathon-short-info .details h2 { font-weight:900; margin-bottom:12px;}
+
+#hackathon-short-info .hackathon-stats { margin:0; padding:0; list-style:none;}
+#hackathon-short-info .hackathon-stats li { float:left; margin-right:40px;}
+#hackathon-short-info .hackathon-stats li:last-child { margin-right:0;}
+#hackathon-short-info .hackathon-stats li h6 {color:#8c8c8c; margin-bottom:4px;}
+#hackathon-short-info .hackathon-stats p { margin-bottom:0;}
+
+#hackathon-short-info .status-label {color:#f1a208; background:#ffecd3; text-transform:uppercase; font-weight:bold; padding:6px 4px 4px 4px; line-height:12px; display:inline-block; margin-left:8px; font-size:10px; border-radius:2px; position:relative; top:-3px; border:1px solid rgba(243,169,27,0.4); }
+
+/*--- Hackathon Left Menu --- */
+/* #hackathon-left-menu { padding:0px; margin-bottom:16px;}
+#hackathon-left-menu.fixed { position:fixed; top:105px; width:270px;}
+#hackathon-left-menu ul { margin:0 0 0 12px; padding:0; list-style:none;  border-top:1px solid #dadada;}
+#hackathon-left-menu ul li { border-bottom:1px solid #dadada; position:relative; margin-left:12px;}
+#hackathon-left-menu ul li:last-child { border-bottom:none; }
+
+#hackathon-left-menu ul li a { display:block; padding:10px 32px 10px 0; font-size:14px; font-weight:500; line-height:18px; color:#8c8c8c;}
+#hackathon-left-menu ul li > a { border-right:4px solid #fff;}
+#hackathon-left-menu ul li.active > a { color:#19171a; font-weight:600; border-right:4px solid #d7263d;}
+#hackathon-left-menu ul li.active a:hover, #hackathon-left-menu ul li.active a:focus { text-decoration:none;}
+#hackathon-left-menu ul li span.number { float:right;}
+#hackathon-left-menu ul li .add-connections { position:absolute; right:20px; top:12px; border:0; line-height:15px; padding:0; font-size:12px; color:#d7263d; text-transform:uppercase;} 
+#hackathon-left-menu ul li .count { display:inline-block; border-radius:10px; background-color:#feb95f; min-width:16px; height:16px; line-height:15px; font-size:11px; color:#4a4548; font-weight:600; vertical-align:middle; margin-left:8px; text-align:center; float:right;}
+
+
+#hackathon-left-menu ul ul { padding:0 25px; border-top:1px solid #dadada;}
+#hackathon-left-menu ul ul li { border-bottom:1px dashed #dadada;}
+#hackathon-left-menu ul ul li:last-child { border-bottom:0;}
+#hackathon-left-menu ul ul li a { font-size:12px; font-weight:normal;} */
+
+#hackathon-left-menu { padding:0px; margin-bottom:16px;}
+#hackathon-left-menu .hackathon-box { background:#f6f6f6;}
+#hackathon-left-menu.fixed { position:fixed; top:63px; width:270px;}
+#hackathon-left-menu.extra { top:102px;}
+#hackathon-left-menu ul { margin:0; padding:0; list-style:none;  border-bottom:1px solid #dadada;}
+#hackathon-left-menu ul:last-child { border-bottom:none; }
+
+#hackathon-left-menu ul li a { display:block; padding:12px; font-size:14px; font-weight:500; line-height:18px; color:#4a4548; border-right:4px solid #f6f6f6;}
+#hackathon-left-menu ul li.title {color:#8a858d; padding:16px 12px 8px; font-size:14px; font-weight:500; line-height:18px;}
+#hackathon-left-menu ul:first-child li:first-child a { border-radius:2px 2px 0 0;}
+#hackathon-left-menu ul:last-child li:last-child a { border-radius:0 0 2px 2px;}
+#hackathon-left-menu ul li.active { border-bottom:1px solid #dadada; border-top:1px solid #dadada;}
+#hackathon-left-menu ul li:first-child.active { border-top:0;}
+#hackathon-left-menu ul li:last-child.active { border-bottom:0;}
+#hackathon-left-menu ul li.active a { color:#19171a; font-weight:600; border-right:4px solid #d7263d; background:#fff;}
+#hackathon-left-menu ul li.active a:hover, #hackathon-left-menu ul li.active a:focus { text-decoration:none;}
+#hackathon-left-menu ul li .count { display:inline-block; border-radius:10px; background-color:#feb95f; min-width:16px; height:16px; line-height:15px; font-size:11px; color:#4a4548; font-weight:600; vertical-align:middle; margin-left:8px; text-align:center; float:right;}
+
+/*--- Hackathon Common List --- */
+.hackathon-common-list { margin:0; padding:0 !important; list-style:none;}
+.hackathon-common-list li { margin:0;}
+.hackathon-common-list .image-holder {width: 80px; height: 80px; border-radius: 4px; line-height:69px; text-align:center; padding:4px; background-color: #ffffff; border:1px solid #dadada; margin-bottom:8px;}
+.hackathon-common-list .image-holder img { max-height:70px; max-width:80%;}
+.hackathon-common-list .image-holder h5 {padding-top:4px;}
+.hackathon-common-list .image-holder h5 svg { display:block; margin:0 auto 8px;}
+.hackathon-common-list .image-holder svg.second .filling { fill:#c2c2c2;}
+.hackathon-common-list .image-holder svg.third .filling { fill:#c26f04;}
+.hackathon-common-list .image-holder svg.fourth .filling { fill:#4cd387;}
+.hackathon-common-list h6 {color:#8c8c8c; margin-bottom:2px;}
+.hackathon-common-list h5, .hackathon-common-list p { margin-bottom:0;}
+.hackathon-common-list.sponsors-list .image-holder { width:100%;}
+.hackathon-common-list .special-prizes .image-holder h5{ padding-top:18px; }
+.hackathon-common-list .special-prizes ul { margin:0px; padding:8px 0px 0px 15px; }
+.hackathon-common-list .special-prizes ul li { font-size:14px; line-height:20px; margin:0px; }
+
+.hackathon-common-list.judges-list, .hackathon-common-list.prizes-list {display: flex; flex-flow: row wrap; margin-top:-16px; position:relative;}
+/* .hackathon-common-list.judges-list:last-child, .hackathon-common-list.prizes-list:last-child { margin-bottom:0;} */
+.hackathon-common-list.judges-list li, .hackathon-common-list.prizes-list li { margin:16px 0;}
+.hackathon-common-list.judges-list h5 { margin-bottom:4px;}
+.hackathon-common-list.judges-list p { line-height:22px;}
+.hackathon-common-list.judges-list .image-holder { line-height:78px; padding:0;}
+.hackathon-common-list.judges-list .image-holder img { max-width:78px; max-height:78px;}
+/* .hackathon-common-list.judges-list li:nth-last-child(-n+4) { margin-bottom:0;} */
+
+/*--- Hackathon Accordion --- */
+.hackathon-accordion .panel {border-radius:0; border:0; box-shadow:none; background:none; margin:0;}
+.hackathon-accordion .panel:first-child .panel-heading h6, .hackathon-accordion .panel:first-child .panel-heading { border-radius:2px 2px 0 0;}
+.hackathon-accordion .panel:last-child .panel-heading h6, .hackathon-accordion .panel:last-child .panel-heading { border-radius:0 0 2px 2px;}
+.hackathon-accordion .panel-heading { padding:0; border:0; background:none;}
+.hackathon-accordion .panel-heading h6 {color:#424242; margin:0; font-size:14px; padding:12px; border:0; background:#ffffff;}
+.hackathon-accordion .panel:first-child .panel-heading h6 { border-radius:2px 2px 0 0;}
+.hackathon-accordion .panel:last-child .panel-heading h6 { border-radius:0 0 2px 2px;}
+.hackathon-accordion .panel-heading h6.collapsed { background:#f6f6f6; border-bottom:1px solid #dadada;}
+.hackathon-accordion .panel-heading h6.title { color:#8c8c8c; border-bottom:0;}
+.hackathon-accordion .panel-heading h6.no-collapse { background:#f6f6f6; border-bottom:1px solid #dadada; padding:0;}
+.hackathon-accordion .panel-heading h6.no-border { position:relative; margin-top:-1px; border-top:1px solid #dadada;}
+.hackathon-accordion .panel-heading h6.no-border:before { content:""; height:1px; background:#f6f6f6; display:block; width:100%; position:absolute; top:-2px; left:0;}
+.hackathon-accordion .panel-heading h6.no-border.no-collapse, .hackathon-accordion .panel-heading h6.no-border.collapsed {border-bottom:0; margin-top:0px; border-top:0;}
+.hackathon-accordion .panel-heading h6.no-border.no-collapse:before, .hackathon-accordion .panel-heading h6.no-border.collapsed:before {display:none;}
+.hackathon-accordion .panel-heading h6.no-collapse a {color:#424242; padding:12px; display:block; border-right:4px solid #f6f6f6;}
+.hackathon-accordion .panel-heading h6.no-collapse.active { background:#ffffff; border-bottom:1px solid #dadada; border-top:1px solid #dadada;}
+.hackathon-accordion .panel-heading h6.no-collapse.active a { border-right:4px solid #d7263d; color:#19171a; font-weight:600;}
+.hackathon-accordion .panel-heading h6 strong {color:#19171a; font-weight:600; margin-right:6px;}
+.hackathon-accordion .panel-heading span { display:block; float:left;}
+.hackathon-accordion .panel-heading .round-name { width:92px;}
+.hackathon-accordion .panel-heading .arrow-icon { width:16px; display:block; height:16px; background:url("images/tg_images_new/sprites.svg") -177px -217px no-repeat; position:relative; float:left; margin:3px 0 0 0; float:right;}
+.hackathon-accordion .panel-heading .collapsed .arrow-icon { background-position:-217px -217px; } 
+.hackathon-accordion .panel-collapse { border-bottom:1px solid #dadada;}
+
+/*--- Hackathon Common Page --- */
+body.hackathon-common-page .left-panel { width:25%;}
+body.hackathon-common-page .right-panel { width:75%; padding-left:10px; padding-top:48px; }
+
+/*--- Hackathon Team Page --- */
+body.hackathon-team-page #coding-platform-head { height:88px; padding:16px 0;}
+body.hackathon-team-page #coding-platform-head .question-info { width:58%;}
+body.hackathon-team-page #coding-platform-head .question-info h3 { margin-bottom:4px;}
+body.hackathon-team-page #coding-platform-head .question-info h3 a {color:#19171a;}
+body.hackathon-team-page #coding-platform-head p span {color:#8a858d; margin-right:2px;}
+body.hackathon-team-page #coding-platform-head .test-actions { padding-top:0; text-align:center;}
+body.hackathon-team-page #coding-platform-head .test-actions .btn { min-width:188px; margin-bottom:4px;}
+body.hackathon-team-page #container-wrap { padding-top:88px !important;}
+
+/*--- Create A Team --- */
+#create-a-team .modal-body,#create-a-team .modal-header { text-align:left; }
+#create-a-team .modal-body ul li:first-child .error_msg { position:absolute; }
+#create-a-team .modal-body h3 { text-align:center; }
+#create-a-team .modal-body .btn { min-width:148px; }
+#create-a-team textarea.form-control, #send-request-form textarea.form-control { height:120px;}
+
+/*--- Join Team Confirmation --- */
+#join-team-confirmation p { margin-bottom:0;}
+#join-team-confirmation .modal-header { padding-bottom:0;}
+
+/*--- Invite Participants Form --- */
+#invite-participants-form .modal-title span { font-weight:normal; color:#8a858d; font-size:14px; margin-left:2px;}
+#invite-participants-form textarea.form-control { height:100px;}
+
+/*--- Modal --- */
+.modal .modal-body, .modal .modal-header { padding-bottom:0;}
+#social-login-consent .modal-body{padding-bottom:16px;}
+.modal .modal-body p:last-child { margin-bottom:0;}
+.modal.success .modal-body { text-align:center; padding-bottom:16px !important;}
+.modal.success .modal-body h3 { margin-bottom:8px;}
+.modal.success .modal-body .btn { min-width:156px; margin-top:8px;}
+.modal.success .icon { clear:both;}
+.modal.success button.close { position:relative; margin-bottom:-8px;}
+
+.modal.modal-sm .modal-footer .btn { margin-left:6px;}
+
+/*--- Team Manage Request --- */
+#hackathon-content-box.team-manage-request header h3 { margin-bottom:8px;}
+
+/*--- Accept Reject Request --- */ 
+.accept-reject-request .checkbox-input { margin-bottom:0;}
+.modal.accept-reject-request .teams-list .team-block { padding-bottom:0;}
+.accept-reject-request .modal-header { padding-bottom:0;}
+.accept-reject-request .modal-footer { padding-top:0;}
+.accept-reject-request .modal-body { padding-bottom:0;}
+.accept-reject-request .modal-body p { margin-bottom:16px;}
+
+/*--- Faq Hackathon --- */ 
+.faq-hackathon { margin-bottom:0;}
+.faq-hackathon .panel { box-shadow:none;}
+.faq-hackathon .panel-heading { padding:0; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.09); background:#f6f6f6; border-radius:4px;}
+.faq-hackathon .panel-heading h6 { font-size:14px;}
+.faq-hackathon .panel-heading h6 a { display:block; font-weight:600; color:#19171a; text-decoration:none; padding:6px 16px;}
+.faq-hackathon .panel-heading h6 a.collapsed { font-weight:normal; color:#424242;}
+.faq-hackathon .panel-heading .arrow-icon { width:16px; display:block; height:16px; background:url("images/tg_images_new/sprites.svg") -177px -217px no-repeat; position:relative; float:left; margin:3px 0 0 0; float:right;}
+.faq-hackathon .panel-heading .collapsed .arrow-icon { background-position:-217px -217px; } 
+.faq-hackathon .panel + .panel { margin-top:8px;}
+
+/*--- Hackathon Our Submission --- */
+.hackathon-our-submission .finale-btn { min-width:176px;}
+.hackathon-our-submission .final-submission-table td {vertical-align:middle;}
+.hackathon-our-submission .submission-table .table1 tr td .checkbox-input { padding-left:24px;}
+
+/*--- About Hackathon --- */
+.hackathon-about p strong { font-weight:600;}
+.hackathon-about .button2 { min-width:120px; margin-right:12px;}
+.hackathon-about dl.description-list dt { width:112px; margin:0;}
+.hackathon-about dl.description-list dd { margin-left:112px;}
+
+/*--- Team Structure --- */
+.team-structure { margin:0; padding:0; list-style:none;}
+.team-structure li { margin-bottom:16px;}
+.team-structure li .image { float:left; width:64px; height:64px; border-radius:6px; border:1px solid #dadada; text-align:center; line-height:61px;}
+.team-structure li .image img { max-width:62px; max-height:62px; border-radius:5px;}
+.team-structure li .details { margin-left:80px; height:64px; display:table; width:641px;}
+.team-structure li .details .inner { display:table-cell; vertical-align:middle;}
+.team-structure li .details h5 { margin-bottom:4px;}
+.team-structure li .details p { margin-bottom:0; color:#8a858d;}
+.team-structure li .details h5 span {color:#8a858d; font-weight:normal; margin-left:4px;}
+
+/*--- Hackathon Icon --- */
+.hackathon-icon { display:inline-block; width:16px; height:16px; vertical-align:middle; margin-right:8px; background:url(images/tg_images_new/sprites.svg) no-repeat; position:relative; top:-1px;}
+.hackathon-icon.exclamation-icon { background-position:-352px -344px;}
+.hackathon-icon.tick-icon { background-position:-168px -240px;}
+.hackathon-icon.tick-icon1 { background-position:-372px -344px;}
+.hackathon-icon.clock-icon { background-position:-173px -376px; width:17px; height:17px;}
+
+/*--- Hackathon Winners --- */
+.hackathon-winners { margin:0; padding:0; list-style:none;}
+.hackathon-winners li { border-bottom:1px solid #dadada; position:relative; padding:0 16px 16px; margin:0 -16px 16px;}
+.hackathon-winners li:last-child { border-bottom:0; margin-bottom:0; padding-bottom:0;}
+.hackathon-winners li .image { float:left; margin-top:3px; width:60px; height:60px; border-radius:50%; line-height:57px; text-align:center; border:1px solid #dadada;}
+.hackathon-winners li .image img { border-radius:50%; max-width:58px; max-height:58px;}
+.hackathon-winners li .details { margin-left:76px;}
+.hackathon-winners li h5 { margin-bottom:4px;}
+.hackathon-winners li p { margin-bottom:0;}
+.hackathon-winners li .details p span {color:#8c8c8c; display:block;}
+.hackathon-winners li .icon { float:left; width:72px; height:72px; text-align:center;}
+.hackathon-winners li .prize-details { margin-left:78px; display:table; height:72px;}
+.hackathon-winners li .prize-details .inner { display:table-cell; vertical-align:middle;}
+.hackathon-winners li h3 { margin-bottom:2px;}
+.hackathon-winners li .language-label { border-radius:2px; display:inline-block; background:#d8eedc; font-weight:600; line-height:15px; font-size:12px; padding:0 2px; color:#2ea548; margin-bottom:12px;}
+.hackathon-winners li .icon svg.second .filling { fill:#9b9b9b;}
+.hackathon-winners li .icon svg.third .filling { fill:#c26f04;}
+.hackathon-winners li .icon svg.fourth .filling { fill:#4cd387;}
+
+/*--- Hackathon Theme lists --- */
+.hackathon-themes-list { margin:0; padding:8px 0 0; list-style:none;}
+.hackathon-themes-list li { border-bottom:1px solid #dadada; position:relative; padding:0 16px 16px; margin:0 -16px 16px;}
+.hackathon-themes-list li:last-child { border-bottom:0; margin-bottom:0; padding-bottom:0;}
+.hackathon-themes-list li .image { float:left; width:60px; height:60px; line-height:57px; text-align:center;}
+.hackathon-themes-list li .image img { max-width:58px; max-height:58px;}
+.hackathon-themes-list li .details { margin-left:76px;}
+.hackathon-themes-list li  h3.sub-themes { margin-bottom:16px;}
+.hackathon-themes-list li  h3, .hackathon-themes-list li  h5 { margin-bottom:4px;}
+.hackathon-themes-list li  h5 {color:#424242;}
+.hackathon-themes-list li  p { margin-bottom:10px;}
+.hackathon-themes-list li .hackathon-icon.arrow-icon { background-position:-347px -312px; margin-right:0; margin-left:4px;}
+.hackathon-themes-list li .hackathon-icon.arrow-icon.active { background-position:-316px -312px; margin-right:0; margin-left:4px;}
+.hackathon-themes-list li .action-lnk { margin-bottom:24px; display:inline-block;}
+.hackathon-themes-list li .action-lnk:last-child { margin-bottom:0;}
+
+/*--- Search Form Hackathon --- */ 
+.search-form-hackathon { width:200px; position:relative;}
+.search-form-hackathon #search-form-content { top:31px; border:1px solid #dadada; padding:8px 0 0;}
+.search-form-hackathon #search-form-content ul li a { padding:4px 4px 4px 32px;}
+.search-form-hackathon #search-form-content h6 { margin-left:32px; display:none;}
+.search-form-hackathon .no-content { padding:24px; text-align:center;}
+.search-form-hackathon .no-content svg { margin-bottom:16px;}
+.search-form-hackathon .no-content p { margin:0; color:#8a858d;}
+.search-form-hackathon .inner { background:#fff; border:1px solid #c2c2c2; border-radius:3px; height:32px; padding:0 8px 0 32px; position:relative;}
+.search-form-hackathon .search-icon { background:url("images/tg_images_new/sprites.svg") 0 0 no-repeat; width:32px; display:block; height:32px; position:absolute; left:1px; top:-1px; background-position:-280px -72px; opacity:0.5;}
+.search-form-hackathon .search-close { background:url(images/tg_images_new/sprites.svg) -52px -300px no-repeat; width:8px; height:8px; display:block; position:absolute; right:4px; top:11px; opacity:0.5;}
+.search-form-hackathon input[type='text'] { border:0; float:left; width:96%; padding:0; font-size:14px; line-height:22px; color:#4a4548; font-weight:normal; height:30px;}
+
+.search-form-hackathon .search-form-content { position:absolute; display:none; top:31px; left:0; background:#fff; border-radius:0 0 6px 6px; box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1); width:100%; z-index:10; border:1px solid #dadada; padding:8px 0 0;}
+.search-form-hackathon .search-form-content h6 {display:none;}
+.search-form-hackathon .search-form-content ul { margin:0 0 10px; padding:0; list-style:none;}
+.search-form-hackathon .search-form-content ul li { margin:0;}
+.search-form-hackathon .search-form-content ul li a { font-size:14px; text-decoration:none; display:block; line-height:20px; color:#4a4548; padding:4px 4px 4px 32px;}
+.search-form-hackathon .search-form-content ul li a span { color:#8a858d; margin-left:12px;}
+.search-form-hackathon .search-form-content ul li a:hover { text-decoration:none; background-color:#f2f2f2;}
+
+/*--- Hackathon ContentBox --- */
+#hackathon-content-box .hackathon-alert {color:#8c8c8c; text-align:right; margin-bottom:0; padding:10px; padding-bottom:0;}
+#hackathon-content-box { position:relative;}
+
+#hackathon-content-box header { padding:16px;}
+#hackathon-content-box header .description-list { float:right;}
+#hackathon-content-box header .description-list dt { margin-right:2px; line-height:32px;}
+#hackathon-content-box header .description-list dd { margin-right:0; line-height:32px;}
+#hackathon-content-box header h3 { line-height:32px; margin-bottom:16px;}
+#hackathon-content-box header h3 span { margin-left:4px; color:#8c8c8c; font-size:14px; font-weight:normal;}
+
+#hackathon-content-box #search-form { width:200px;}
+#hackathon-content-box #search-form #search-form-content { top:31px; border:1px solid #dadada; padding:8px 0 0;}
+#hackathon-content-box #search-form .inner { border-radius:3px; border:1px solid #c2c2c2; padding:0 8px 0 32px; height:32px; box-shadow:none;}
+#hackathon-content-box #search-form input[type="text"] { font-size:14px; font-weight:normal; height:30px;}
+#hackathon-content-box #search-form .search-icon { left:1px; top:-1px; background-position:-280px -72px; opacity:0.5;}
+#hackathon-content-box #search-form-content ul li a { padding:4px 4px 4px 32px;}
+#hackathon-content-box #search-form-content h6 { margin-left:32px; display:none;}
+#hackathon-content-box #search-form .no-content { padding:24px 16px 16px;}
+
+#hackathon-content-box .col-sm-4 .custom-dropdown .btn {border:1px solid #8a858d; min-width:120px;}
+#hackathon-content-box .col-sm-4 .custom-dropdown .btn:after { background-position:-337px -373px;}
+#hackathon-content-box .col-sm-4 .custom-dropdown .btn.active:after { background-position:-365px -373px;}
+#hackathon-content-box .col-sm-4 .custom-dropdown .btn.active {background-color: #f2f2f2; color:#424242; border: solid 1px #c2c2c2;}
+
+#hackathon-content-box .common-dropdown .btn {min-width:75px;border:1px solid #8a858d;box-shadow:none; padding:5px 28px 5px 12px; color:#4a4548; background:#fff; text-align:left;}
+#hackathon-content-box .common-dropdown .btn:after { z-index:5; pointer-events:none; display:block; position:absolute; right:0; top:1px; background:url(images/tg_images_new/sprites.svg) -337px -373px no-repeat; width:31px; height:32px; content:"";}
+#hackathon-content-box .common-dropdown .btn.active:after { background-position:-365px -373px;}
+#hackathon-content-box .common-dropdown .btn.active {background-color: #f2f2f2; color:#424242; border: solid 1px #c2c2c2;}
+#hackathon-content-box .common-dropdown .dropdown-menu { width:245px; top:40px; right:0;}
+#hackathon-content-box .common-dropdown li.checkbox-field { padding:10px 12px;}
+#hackathon-content-box .common-dropdown li.checkbox-field .checkbox-block { margin-bottom:0;}
+
+#hackathon-content-box .common-dropdown.accepted .btn { border:1px solid #26d974; color:#26d974;}
+#hackathon-content-box .common-dropdown.accepted .btn:after {  background-position:-310px -373px;}
+#hackathon-content-box .common-dropdown.accepted .btn.active:after { background-position:-283px -373px;}
+#hackathon-content-box .common-dropdown.accepted .btn.active {background-color: #ffffff; color:#26d974; border: solid 1px #26d974;}
+#hackathon-content-box .common-dropdown.accepted .dropdown-menu { width:175px;}
+
+#hackathon-content-box .common-dropdown.rejected .btn { border:1px solid #ff3f00; color:#ff3f00;}
+#hackathon-content-box .common-dropdown.rejected .btn:after {  background-position:-21px -401px;}
+#hackathon-content-box .common-dropdown.rejected .btn.active:after { background-position:7px -401px;}
+#hackathon-content-box .common-dropdown.rejected .btn.active {background-color: #ffffff; color:#ff3f00; border: solid 1px #ff3f00;}
+#hackathon-content-box .common-dropdown.rejected .dropdown-menu { width:175px;}
+
+/*--- Common Dropdown --- */
+.common-dropdown .remove-icon { background-position:-221px -379px; width:19px; height:19px;}
+.common-dropdown .exit-icon { background-position:-369px -111px;}
+.common-dropdown .undo-icon { background-position:-144px -376px; width:20px;}
+.common-dropdown .cancel-icon { background-position:-9px -151px;}
+
+/*--- Hackathon Leaderboard --- */
+.hackathon-leaderboard .table1 tr th:first-child, .hackathon-leaderboard .table1 tr th:last-child, .hackathon-leaderboard .table1-wrap { border-radius:0;}
+.hackathon-leaderboard .table1-wrap { position:relative; margin:0 -1px;}
+.hackathon-leaderboard .table1 th small, .hackathon-leaderboard .table1 td small { font-size:12px; color:#8c8c8c; font-weight:normal;}
+.hackathon-leaderboard .table1 td span { color:#8c8c8c;}
+.hackathon-leaderboard .table1 td { vertical-align:middle;}
+.hackathon-leaderboard table td .moved-position { display:inline-block; border-radius:2px; padding:1px 2px 2px; font-size:10px; color:#fff; display:inline-block; margin-left:4px; background:#7ed321; line-height:7px; position:relative; top:1px;}
+.hackathon-leaderboard table td .moved-position svg { position:relative; top:-2px;}
+.hackathon-leaderboard .table1 td .team-name { position:relative; display:inline-block;}
+.hackathon-leaderboard .table1 td .popover {border-radius:3px; background-color: #ffffff; box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1); border: solid 1px #dadada; width:182px; padding:0; left:auto; right:-195px;} 
+.hackathon-leaderboard .table1 tbody tr:nth-last-child(-n+3) td .popover { top:auto; bottom:-10px;} 
+.hackathon-leaderboard .table1 td .popover .popover-content { padding:8px 0;}
+.hackathon-leaderboard .table1 td .popover.right > .arrow {border-right-color:rgba(218,218,218,1); top:auto; margin-top:16px; bottom:8px;}
+.hackathon-leaderboard .table1 td .popover ul { margin:0; padding:0; list-style:none;}
+.hackathon-leaderboard .table1 td .popover ul li a { padding:8px 16px; display:block;}
+.hackathon-leaderboard .table1 td .popover ul li a:hover { background:#f7f7f7;}
+.hackathon-leaderboard .table1 td:hover .popover { display:block;}
+.hackathon-leaderboard .table1 td .popover .description-list { padding:8px 16px;}
+.hackathon-leaderboard .table1 td .popover .description-list dt { min-width:55px;}
+.hackathon-leaderboard .table1 td .popover .description-list dd { margin-left:60px; text-align:right;}
+.hackathon-leaderboard .table1 td .popover .description-list dd .alert { font-weight:bold;}
+
+.hackathon-leaderboard .active-user-status { width:860px;}
+.hackathon-leaderboard .active-user-status .btn { min-width:120px; margin-left:16px;}
+.hackathon-leaderboard .active-user-status .table1 tr td { min-width:95px;}
+.hackathon-leaderboard .active-user-status .table1 tr td.my-details-leaderboard { min-width:74px;}
+.hackathon-leaderboard .active-user-status .table1 tr td.rank { width:101px;}
+.hackathon-leaderboard .active-user-status .table1 tr td.name { width:312px;}
+.hackathon-leaderboard .active-user-status .table1 tr td.language { width:146px;}
+
+.hackathon-leaderboard .result_msg { margin:0px; padding-top:16px;}
+
+/*--- Hackathon Teams --- */
+.teams-list .team-block { border-top:1px solid #dadada; padding:16px 16px 0;}
+.teams-list .team-block.no-border { border-top:0;}
+.modal .teams-list .team-block { padding:0;}
+.teams-list .alert { margin-bottom:16px;}
+.teams-list .team-block .header h3 { line-height:32px; margin-bottom:16px !important;}
+.teams-list .team-block .header h3 span { margin-left:4px; color:#8c8c8c; font-size:14px; font-weight:normal;}
+.teams-list .team-block  h6 { color:#8a858d; margin-bottom:8px;}
+.teams-list .team-block .content-block-normal { margin-bottom:24px;}
+.teams-list .team-block .actions { text-align:right; line-height:32px;}
+.teams-list .team-block .actions .btn { min-width:120px; margin-left:6px;}
+.teams-list .team-block .actions .btn:first-child {margin-left:0;}
+.teams-list .team-block .members-list { margin:0; padding:0; list-style:none;}
+.teams-list .team-block .members-list li { margin-bottom:16px;}
+.teams-list .team-block .members-list li h6 { margin-bottom:2px;}
+.teams-list .team-block .members-list li h6 a {color:#4a4548;}
+.teams-list .team-block .members-list li .btn { float:right; margin-left:16px; min-width:120px;}
+.teams-list .team-block .members-list li .actions-left { clear:both; padding-top:16px;}
+.teams-list .team-block .members-list li .actions-left .btn { float:left; margin-right:8px; margin-left:0;}
+.teams-list .team-block .members-list li .remove-btn { display:none;}
+.teams-list .team-block .members-list li p { color:#8a858d; margin-bottom:0;}
+.teams-list .team-block .members-list .image { width:40px; height:40px; border-radius:50%; border:1px solid #dadada; float:left; text-align:center; line-height:37px;}
+.teams-list .team-block .members-list .image img { max-height:38px; max-width:38px; border-radius:50%;}
+.teams-list .team-block .members-list .details { margin-left:52px; min-height:42px;}
+.teams-list .team-block  p span { color:#8a858d;}
+.teams-list .team-block .members-list .image.email { border:0; background:url(images/tg_images_new/sprites.svg) -247px -368px no-repeat;}
+
+.teams-list .view-all-block { border-top:1px solid #dadada; padding-bottom:24px; margin-bottom:0;}
+
+.teams-list .team-block .inner-wrap { display:table; height:40px; width:100%;}
+.teams-list .team-block .inner-wrap .inner { display:table-cell; vertical-align:middle;}
+.teams-list .team-block .inner-wrap .inner h6 { margin:0;}
+
+.teams-list .team-block dl.description-list { margin:-2px 0 14px; clear:both; float:left; width:100%;}
+.teams-list .team-block dl.description-list dt { margin-right:0; padding-top:2px; min-width:52px;}
+.teams-list .team-block dl.description-list dd { margin-left:52px;}
+
+.teams-list .team-block .green-label { display:inline-block; border-radius: 3px; background-color: #26d974; padding:2px 4px 4px; font-size:14px; line-height:14px; color:#fff; font-weight:600; margin-left:6px; vertical-align:middle;}
+.teams-list .team-block .yellow-label { display:inline-block; border-radius: 3px; background-color: #feb95f; padding:3px 4px; font-size:14px; line-height:14px; color:#4a4548; font-weight:normal; vertical-align:middle; margin-left:6px;}
+.teams-list .team-block .red-label { display:inline-block; border-radius: 3px; background-color: #E15554; padding:3px 4px; font-size:14px; line-height:14px; color:#ffffff; font-weight:normal; vertical-align:middle; margin-left:6px;}
+
+.teams-list .team-block .member-skills-status { margin:0; position:relative;}
+.teams-list .team-block .member-skills-status .tooltip-inner { text-align:left;}
+.teams-list .team-block .member-skills-status a.action-lnk { display:inline-block; line-height:20px;}
+.teams-list .team-block .member-skills-status .skills-list { margin:0;}
+.teams-list .team-block .member-skills-status .skills-list a { text-decoration:none; display:inline-block; margin:2px 1px 2px 0; font-size:12px; line-height:12px; color:#727272; background:#f0f0f0; padding:4px; border-radius: 3px;}
+.teams-list .team-block .member-skills-status .skills-list a.high { background:#e5f3dc; color:#417505;}
+.teams-list .team-block .member-skills-status .skills-list a.average { background:#faebab; color:#be6d04;}
+.teams-list .team-block .member-skills-status .skills-list a.low { background:#ffcab9; color:#ba2e00;}
+.teams-list .team-block .member-skills-status .skills-list a:last-child { margin-right:0;}
+.teams-list .team-block .member-skills-status .action-lnk { text-decoration:none; color:#d7263d;}
+
+/*--- Hackathon Filters --- */
+.hackathon-filters {border-radius: 3px; display:none; background-color: #f2f2f2; border: solid 1px #c2c2c2; padding:16px; margin-top:8px;}
+.hackathon-filters > .form-inline > .form-group { min-width:120px; margin-right:6px; margin-bottom:16px; position:relative;}
+.hackathon-filters .btn { min-width:120px; margin-right:12px;}
+.hackathon-filters .select-options { display:none; border-radius:3px; background-color: #ffffff; box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1); border: solid 1px #dadada; width:276px; padding:0; top:61px;}
+.hackathon-filters .select-options.bottom > .arrow { left:36%; border-bottom-color:rgba(0,0,0,0.15);}
+.hackathon-filters .select-options .popover-content { padding:16px;}
+.hackathon-filters .select-options .form-inline { margin-bottom:16px;}
+.hackathon-filters .select-options .search-field { position:relative; width:160px;}
+.hackathon-filters .select-options .search-field .remove { width:12px; height:12px; display:inline-block; background:url(images/tg_images_new/sprites.svg)  -51px -299px no-repeat; position:absolute; right:4px; top:13px; display:none;}
+.hackathon-filters .select-options .action-lnk { margin-left:6px;}
+.hackathon-filters .select-options p .action-lnk { margin-left:0;}
+.hackathon-filters .select-options .search-field input[type="text"] { padding-left:37px; width:160px;}
+.hackathon-filters .select-options .search-field .search-icon { width:16px; height:16px; position:absolute; left:12px; top:11px; display:block; background: url(images/tg_images_new/sprites.svg) no-repeat; background-position:-287px -81px; opacity:0.4;}
+.hackathon-filters .select-options .options-list { max-height:335px; overflow:auto; position:relative; margin-right:-16px;}
+.hackathon-filters .custom-dropdown .btn { color:#c2c2c2;}
+.hackathon-filters .custom-dropdown .btn.has-value { color:#424242;}
+
+/*--- Hackathon Phases --- */
+#hackathon-phases .hackathon-box { margin-bottom:0;}
+#hackathon-phases .hackathon-accordion .panel-body { padding:16px 16px 16px 132px; margin-right:26px; margin-top:-1px; border-top:1px solid #dadada; border-bottom:1px solid #dadada; position:relative;}
+#hackathon-phases .hackathon-accordion .panel-body .btn { min-width:184px;}
+#hackathon-phases .hackathon-accordion .panel-heading h6 { padding:16px 24px 16px 40px; color:#8c8c8c;}
+#hackathon-phases .hackathon-accordion .panel-body dl.description-list { margin-bottom:16px;}
+#hackathon-phases .hackathon-accordion .panel-body dl.description-list dd { margin-left:108px;}
+#hackathon-phases .hackathon-accordion .panel-body dl.description-list dd strong { font-weight:600; color:#19171a;}
+#hackathon-phases .hackathon-accordion .panel-body dl.description-list dt, #hackathon-phases .hackathon-accordion .panel-body dl.description-list dd { margin-bottom:12px;}
+#hackathon-phases .hackathon-accordion .in .panel-body:after {content:""; background:#dadada; height:1px; position:absolute; right:-26px; bottom:-1px; display:block; width:26px;}
+#hackathon-phases .hackathon-accordion .panel-body dl.description-list dd strong { font-weight:600; color:#19171a;}
+#hackathon-phases .hackathon-accordion .panel-body:before {content:""; background:#fff; height:1px; position:absolute; left:0; top:-1px; display:block; width:132px;}
+#hackathon-phases .hackathon-accordion .panel-collapse { border-bottom:0;}
+#hackathon-phases .status-label {color:#f1a208; background:#ffecd3; font-weight:bold; text-transform:uppercase; padding:6px 4px 4px 4px; line-height:12px; display:inline-block; margin-left:8px; font-size:10px; border-radius:2px; position:relative; top:-1px; border:1px solid rgba(243,169,27,0.4)}
+
+#hackathon-phases .status-label.success {background:#ccf7df; color:#1c9e55; border:1px solid rgba(28,158,85,0.4) }
+#hackathon-phases .alert { margin-bottom:0;}
+#hackathon-phases .round-name .hackathon-icon { margin-left:-22px; margin-right:4px;}
+
+#hackathon-phases .single-round .panel-heading h6 { padding:16px;}
+#hackathon-phases .single-round .panel-body { margin-right:16px; padding:16px;}
+#hackathon-phases .single-round .panel-body:before { left:0; width:16px;}
+#hackathon-phases .single-round .in .panel-body:after { right:-16px;}
+
+/*--- Discussion Forum --- */
+#discussion-forum .hackathon-refresh-btn { background:url(images/tg_images_new/sprites.svg) -128px -152px no-repeat; width:16px; height:16px; display:inline-block; vertical-align:middle; margin-left:8px;}
+.hackathon-common-page #discussion-forum ul.comment-section > li:before { background:#fff;}
+
+/* -- Tablesorter -- */
+table.tablesorter thead tr .header {cursor: pointer;}
+table.tablesorter thead tr .header:after {content:""; display:inline-block; margin-left:4px; width:8px; height:11px; background: url(images/tg_images_new/shorting-icon.svg) left top no-repeat; vertical-align:middle; position:relative; top:-1px;}
+table.tablesorter thead tr .headerSortUp:after { height:5px;}
+table.tablesorter thead tr .headerSortDown:after { background-position:0 -5px; height:5px;}
+
+.accept-reject-request .modal-body { overflow-y:hidden !important;}
+
+#TechGigbootStrapModal .modal-content > .close { right:16px; top:16px; }
+
+/* -- Forgot Password -- */
+#forgot-password .modal-body { padding-bottom:16px; }
+#ip_rights_modal label { font-weight:normal; }
+
+/* =========================================:hidden !important;=================================
+	Responsive Settings
+========================================================================== */
+
+@media (max-width:1200px) {
+	#hackathon-left-menu.fixed { width:225px;}
+	.hackathon-leaderboard .active-user-status { width:725px;}
+	.hackathon-leaderboard .active-user-status .table1 tr td.name { width:282px;}
+	.hackathon-leaderboard .active-user-status .table1 tr td.no-attempts { width:104px;}
+}
+
+@media (max-width:992px) {
+	body.hackathon-common-page .left-panel > h2 { width:500px;}
+	#hackathon-left-menu.fixed { width:165px;}
+	.hackathon-leaderboard .active-user-status { width:545px;}
+	.hackathon-leaderboard .active-user-status .table1 tr td.no-attempts { width:auto;}
+}
+
+@media (min-width:767px) {
+	.hackathon-box .tabs1 .nav-tabs { position:relative; margin:0 -16px 24px -16px; clear:both;}
+	#hackathon-content-box header .tabs1 .nav-tabs { margin-bottom:16px;}
+	#hackathon-content-box.hackathon-leaderboard header h3 { margin-bottom:8px;}
+}
+
+@media (max-width:767px) {
+	.sort-by-right,.search-form-hackathon{max-width:100%}
+	
+	.hackathon-specific #footer .right-logo p{float: none;}
+	body.hackathon-common-page .left-panel > h2 { width:auto;}
+	.hackathon-accordion .panel-heading .arrow-icon{margin-right: -15px;}
+	#hackathon-phases .round-name .hackathon-icon {margin-left:0;}
+	body.hackathon-common-page .left-panel, body.hackathon-common-page .right-panel { width:100%; padding-top:0;}
+	#hackathon-left-menu.fixed { width:100%; position:relative; left:auto; top:auto !important;}
+	
+	body.hackathon-common-page #content .left-panel { margin-bottom:24px;}
+	body.hackathon-common-page #all-questions-lnk {padding-left:18px; background:url("images/tg_images_new/sprites.svg") -89px -44px no-repeat;} 
+	body.hackathon-common-page .view-all-block .button2 { max-width:250px;}
+	
+	#hackathon-short-info .company-logo { float:none; margin:0 auto 24px;}
+	#hackathon-short-info .details { margin-left:0;}
+	#hackathon-short-info .hackathon-stats li { width:50%; margin-right:0; margin-bottom:16px;}
+	
+	#hackathon-phases .hackathon-accordion .panel-heading h6, #hackathon-phases .hackathon-accordion .panel-body { padding-left:16px;}
+	#hackathon-phases .hackathon-accordion .panel-body { margin-right:0;}
+	#hackathon-phases .hackathon-accordion .panel-body:before, #hackathon-phases .hackathon-accordion .in .panel-body:after {content:none; background:none;}
+	
+	#hackathon-content-box.hackathon-leaderboard header h3 { margin-bottom:8px;}
+	#hackathon-content-box header .description-list { float:left; margin-bottom:24px;}
+	#hackathon-content-box .hackathon-alert { text-align:left; font-size:12px; line-height:18px;}
+	
+	.teams-list .team-block .actions {margin-bottom:16px; text-align:left;}
+	#hackathon-content-box .common-dropdown .btn{display: block; position: relative;}
+	.teams-list .team-block .yellow-label, .teams-list .team-block .red-label, .teams-list .team-block .green-label, .teams-list .team-block .actions .btn { margin-left:0; margin-right:0;}
+	.hackathon-page #container-wrap{padding-top:120px !important}
+	#hackathon-header-content{padding-left:0;overflow: hidden;width: 240px;}
+	#header.hackathon-header .user-area{width:40px}
+	.hackathon-page #header .user-area .avatar-pic{font-size: 0;}
+}
+
+dl.description-list dd.normal,#hackathon-phases .hackathon-accordion .panel-body dl.description-list dd.normal{text-transform: none;}

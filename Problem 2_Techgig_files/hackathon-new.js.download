@@ -1,0 +1,662 @@
+	/***
+ * Javascript For Techgig Landing Page
+ * 
+ * This script is intended to provide all client side functionality 
+ * required for Techgig Project
+ * 
+ * Author   : Sebin Baby
+ * Created  : 01 March, 2018
+ */
+
+Tg_HackathonPage = new function() {
+    var $instance = this;
+    var timerVar=null;
+    var loadData = false;
+    var loadModuleData = false;
+    var sortData = null;
+    var totalSeconds = 900;
+    var lbType;
+
+    $instance.init = function() {
+		$(document).on("click", "#hackathon-content-box .col-sm-4 .sort-by-right .btn", function() {
+			var moretext = "Show Filters";
+			var lesstext = "Hide Filters";	
+			
+			if($(this).hasClass("active")) {
+				$(this).removeClass("active");
+				$(this).find('span').html(moretext)
+				//$(".hackathon-filters").hide();
+			} else {
+				$(this).addClass("active");
+				$(this).find('span').html(lesstext);
+				//$(".hackathon-filters").show();
+			}
+			return false;
+		});
+		
+		$(document).on("click", ".hackathon-filters .custom-dropdown .btn", function() {
+
+			if($(this).hasClass("active")) {
+				$(this).removeClass("active");
+				$(this).parents(".form-group").find(".select-options").hide();
+			} else {
+				$(".hackathon-filters .select-options").hide();
+				$(".hackathon-filters .custom-dropdown .btn").removeClass("active");
+				$(this).addClass("active");
+				$(this).parents(".form-group").find(".select-options").show();
+			}
+			return false;
+		});
+		
+		$(document).on("click", function(event){
+			var $trigger = $(".hackathon-filters .select-options, .common-dropdown .btn");
+			if($trigger !== event.target && !$trigger.has(event.target).length){
+				$($trigger).removeClass("active");
+				$(".hackathon-filters .select-options").hide();
+				$(".hackathon-filters .custom-dropdown .btn").removeClass("active");
+			}            
+		});
+		
+		$('.hackathon-filters .select-options .search-field input[type="text"]').keyup(function() {
+			if($($(this)).val() == ''){
+				$(this).parent().find(".remove").hide();
+			}else{
+				$(this).parent().find(".remove").show();
+			}
+		}); 
+		
+		$("#location_lnk").click(function(e) {
+			e.stopPropagation();
+		});
+		
+		$(document).on("click", ".hackathon-filters .select-options .search-field .remove" , function() {
+			$(this).parent().find(".form-control").val('');
+			$(this).hide();
+		});
+		
+		$(document).on("click", "#hackathon-content-box .common-dropdown .btn", function() {
+			var moretext = "More";
+			var lesstext = "less";	
+			
+			if($(this).hasClass("active")) {
+				$(this).find('span').html(moretext)
+				$(this).removeClass("active");
+			} else {
+				$(this).addClass("active");
+				$(this).find('span').html(lesstext);
+			}
+			return false;
+		});
+		
+		$(document).on("click", ".common-dropdown .dropdown-menu li", function() {
+			if($(this).hasClass("checkbox-field")) {
+			
+				$(this).parents(".common-dropdown").addClass("open");
+			}else if($(this).hasClass("remove-member")) {
+				$(this).parents(".common-dropdown").removeClass("open");
+				$(this).parent().prev('.more-btn').removeClass("active");
+				$(this).parents(".team-block").find(".members-list li .remove-btn").show();
+			}else{
+				$(this).parent().prev('.more-btn').removeClass("active");
+			}
+		});
+		
+		$( ".hackathon-leaderboard .table1 td" ).hover(function() {
+  			$( this ).parents( ".table1-wrap" ).css("overflow-x","visible");
+		});
+		$( ".hackathon-leaderboard .table1 td" ).mouseleave(function() {
+  			$( this ).parents( ".table1-wrap" ).css("overflow-x","auto");
+		});
+		
+		$("#hackathon-content-box").css("min-height", $("#hackathon-left-menu").innerHeight());
+		
+		$(window).scroll(function() {
+			var windowScroll = $(window).scrollTop();
+			
+			if ($('#coding-platform-head').length > 0) {
+				if (windowScroll > (($("#header").innerHeight() + $("#hackathon-phases").innerHeight() + $("#banner").innerHeight() + $("#hackathon-short-info").innerHeight() + $("#coding-platform-head").innerHeight() + $(".main-banner").innerHeight()) - 15)) {
+					$('#hackathon-left-menu').addClass('fixed').addClass('extra');
+					$('#coding-platform-head.for-tg').addClass('sticky');
+				}
+				else{
+					$('#hackathon-left-menu').removeClass('fixed').removeClass('extra');
+					$('#coding-platform-head.for-tg').removeClass('sticky');
+				}
+			}else{
+				if (windowScroll > (($("#header").innerHeight() + $("#hackathon-phases").innerHeight() + $("#banner").innerHeight() + $("#hackathon-short-info").innerHeight() + $("#coding-platform-head").innerHeight() + $(".main-banner").innerHeight()))) {
+					$('#hackathon-left-menu').addClass('fixed');					
+				}
+				else{
+					$('#hackathon-left-menu').removeClass('fixed');
+				}
+			}
+		
+
+			/* if ((windowScroll + $("#footer").innerHeight()) > ($('#content').height() + $('#hackathon-phases').height() - 56)) {
+				$('#hackathon-left-menu.fixed').css('top', (0 - (( windowScroll + $("#footer").innerHeight()) - ($('#content').height() +  $('#hackathon-phases').height() - 56))));
+			} 
+			if ((windowScroll + $("#footer").innerHeight()) > ($('#content').height() / 1.17)) {
+				$('#hackathon-left-menu.fixed').css('top', (0 - (( windowScroll + $("#footer").innerHeight()) - ($('#content').height() / 1.17))));
+			}
+			else{
+				
+				if($('#hackathon-phases').length){
+					$('#hackathon-left-menu.fixed').css('top', 16);
+				}else{
+					$('#hackathon-left-menu.fixed').css('top', 105);
+				}
+				
+			} */
+
+		});
+		$(document).on("click","#search-form-content li",function(){
+		//$("#search-form-content li").click(function(){	
+			var season_id = $('#season_id').val();
+			var user_id = $(this).data('user');
+			var name =  $(this).data('name');
+			var level = $("#leaderboard_level").val();
+			var child_season_id = $("#child_season_id").val();
+			if(loadData === false){
+				Tg_HackathonPage.showleaderboard(level,season_id,child_season_id,'0','Y',user_id);	
+			}
+			
+			$("#search_leaderboardname").val(name);
+			$('#search-form-content .searched-content').hide();
+			$('#search-form-content').hide();
+		});
+
+		$(document).on('keyup','#search-form input[type="text"]',function() {
+			if($('#search-form input[type="text"]').val() == ''){
+				var Id = $("#leaderboard-header-tabs").children(".active").attr('id');	   				
+	   			$("#"+Id+" a").click();
+			}else{
+					var keyword = $('#search_leaderboardname').val();
+						if(keyword.length<2){
+							return ;
+						}
+						var page = $('#search-form input[name="page"]').val();
+						var platform_type = $('#platform_type').val();
+						var season_id = $('#season_id').val();
+						var season_url = $('#season_url').val();
+						var level = $("#leaderboard_level").val();
+						var child_season_id = $("#child_season_id").val();
+						var leaderbardType = $("#leaderboardType").val();
+						$.ajax({
+								type: "POST",
+								url: base_url + "/ajax_files/leaderboardname_search.php",
+								data: {'keyword': keyword,platform_type:platform_type,season_id:season_id,season_url:season_url,level:level,child_season_id:child_season_id,leaderboardType:leaderbardType},
+								success: function(data) {
+									if(data.indexOf("no records") > -1) {
+										$('#search-form-content .no-content').show();
+										if(leaderbardType =='Normal'){
+											$('#search-form-content .no-content .notFondMessage').html('Ooops! No participant found.');	
+										}else{
+											$('#search-form-content .no-content .notFondMessage').html('Ooops! No team found.');
+										}
+										
+										$('#search-form-content .searched-content').hide();
+									} else {
+										$('#search-form-content .searched-content').html(data);
+										$('#search-form-content .no-content').hide();
+										$('#search-form-content .searched-content').show();							
+									}
+									$('#search-form-content, #search-form a.search-close').fadeIn();
+									$('#search-form').addClass("active");
+								}
+							});	 
+
+			}
+		});    
+ 		
+
+		$(document).on("click",".pagination li",function(){		
+			
+			var page = $(this).find('a').text();
+
+			if($(this).find('a').attr('class') == 'next-btn') {
+				var page = parseInt($('.pagination li.active').text()) + 1;
+			}
+
+			if($(this).find('a').attr('class') == 'previous-btn') {
+				var page = parseInt($('.pagination li.active').text()) - 1;
+			}
+
+			var season_id = $('#season_id').val();			
+			var level = $("#leaderboard_level").val();
+			var child_season_id = $("#child_season_id").val();
+			if(loadData === false){
+			Tg_HackathonPage.showleaderboard(level,season_id,child_season_id,page,'Y','');			
+			}
+			event.preventDefault();
+			//$("html, body").animate({ scrollTop: 800 },  "slow");	
+            return false;
+		});
+
+		$(document).on("click",".table1 th",function(){
+			var sortText = $(this).text().trim();
+			var sortClass = $(this).hasClass('headerSortDown');
+			var sortOrder = 'desc';
+			if(sortClass == false){
+				sortData = sortText +'| headerSortDown';
+				sortOrder = 'desc';
+			}else{
+				sortData = sortText +'| headerSortUp';
+				sortOrder = 'asc';
+			}
+			var season_id = $('#season_id').val();			
+			var level = $("#leaderboard_level").val();
+			var child_season_id = $("#child_season_id").val();
+			switch(sortText){
+				case 'Rank':
+				case 'S.No.':
+					sortText = 'level_'+level+'_rank';
+					break;
+				case 'Participants':
+					sortText = 'name';
+					break;
+				case 'Participant/Teams':
+					sortText = 'team_name';
+					break;
+				case sortText.indexOf("Total Score")>-1:   
+  					sortText = 'level_'+level+'_marks';
+					break;
+				case 'Attempts':
+					sortText = 'level_'+level+'_attempt_count';
+					break;
+				case 'Last Submitted':
+					sortText = 'level_'+level+'_quiz_submitted_on';
+					break;
+				default:
+					sortText = 'level_'+level+'_marks';
+					break;	
+			}
+			if(loadData === false){
+				Tg_HackathonPage.showleaderboard(level,season_id,child_season_id,'0','Y','',sortText,sortOrder);	
+			}
+		});
+
+		$( document ).ready(function() {
+			var UrlQueryString = $instance.getUrlVars();
+			if(UrlQueryString["my_teams"]=='true' || sessionStorage.getItem("manage_team")=='true' || UrlQueryString["my_team"]=='true'){
+				sessionStorage.setItem("manage_team","false"); 
+				$(".hackathon-left-menu-ajax li [data='myteam']").click();			
+				$('html, body').animate({ scrollTop: $('#content').offset().top }, 'slow');
+			}else if(UrlQueryString["teams"]=='true'){
+				$(".hackathon-left-menu-ajax li [data='all_team']").click();			
+				$('html, body').animate({ scrollTop: $('#content').offset().top }, 'slow');
+			}else if(UrlQueryString["join_team"]=='true'){
+				$(".hackathon-left-menu-ajax li [data='jointeam']").click();			
+				$('html, body').animate({ scrollTop: $('#content').offset().top }, 'slow');
+			}else if(UrlQueryString["leaderboard"]=='true'){
+				$(".hackathon-left-menu-ajax li [data='leaderboard']").click();			
+				$('html, body').animate({ scrollTop: $('#content').offset().top }, 'slow');
+			}else{
+				$("#hackathon-left-menu li").eq(0).click();	
+			}	
+			
+		});
+
+		$(document).on("click",".hackathon-left-menu-ajax li",function(){
+			if($(this).attr("data")=='teamheader'){
+				return false;
+			}
+			var tab = $(this).find('a').attr("data");
+			var season_id = $("#season_id").val();
+			var event_type = $("#event_type").val();
+
+			if(tab=='leaderboard' && $("#hackathon-box-leaderinfo").children().length>0){
+				return false;
+			}
+			if(tab=='submissions' && $("#hackathon-box-submissioninfo").children().length>0){
+				return false;
+			}
+			
+			$(".hackathon-left-menu-ajax li").removeClass("active");
+			$(this).addClass("active");
+			if(tab=='jointeam'){
+				if($(this).find('span').hasClass('count')){
+					$(this).find('span').remove();
+					$.cookie("user_click_on_join_team", 1, {expires : 1,   path    : '/'});	
+				}				
+			}
+			if(loadModuleData===false){
+				$instance.loadHackhathonAjaxModule(tab,season_id,event_type);				
+			}
+			
+		});		
+
+		$(document).on("click",".viewSubmission",function(){
+			var level = $(this).data("level");
+			var submission_flag_anchor = level;
+			$("#submission_level").val(submission_flag_anchor);
+			$(".hackathon-left-menu-ajax li [data='submissions']").click();			
+		});
+	}	
+
+	$instance.getUrlVars= function(){
+		var vars = [], hash;
+		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		for(var i = 0; i < hashes.length; i++)
+		{
+    		hash = hashes[i].split('=');
+    		vars.push(hash[0]);
+    		vars[hash[0]] = hash[1];
+		}
+    	return vars;
+	}
+
+	$instance.loadHackhathonAjaxModule = function(tab,season_id,event_type){
+		var Module ;
+		var pageType;
+		switch(tab){
+			case 'basicinfo':
+				Module = 'EventHackathonListModule';
+				pageType = 'basicinfo';
+				break;
+			case 'discussions':
+				Module = 'ContestCommentsModule';
+				pageType = 'discussions';
+				break;
+			case 'leaderboard':
+				Module = 'EventHackathonListModule';
+				pageType = 'leaderboard';
+				totalSeconds = 900;
+				lbType = 'leaderboard';
+				break;
+			case 'submissions':
+				Module = 'EventHackathonListModule';
+				pageType = 'submissions';
+				totalSeconds = 900;
+				lbType = 'submissions';
+				break;
+			case 'myteam':
+				Module = 'EventLeaderMyTeamModule';
+				pageType = 'myteam';
+				break;
+			case 'all_team':
+				Module = 'EventTeamsJoinModule';
+				pageType = 'all_team';
+				break;
+			case 'jointeam':
+				Module = 'EventTeamsRequestSentModule';
+				pageType = 'jointeam';
+
+				break;
+			case 'winners':
+				Module = 'EventHackathonListModule';
+				pageType = 'winners';
+				break;
+			case 'themes':
+				Module = 'EventHackathonListModule';
+				pageType = 'themes';
+				break;
+			default:
+				Module = 'EventHackathonListModule';
+				pageType = 'basicinfo';
+				break;
+		}
+
+	    loadModuleData=true;
+	    $.ajax({
+	        type: "GET",
+	        url: base_url + "/ajax_files/load_hackathon_module.php",
+	        data: {season_id: season_id, module: Module,page_type:pageType,event_name:event_type},
+	        dataType: 'html',
+	        cache: false,
+	        success: function (data) {
+	        	if(pageType !='leaderboard' && pageType !='submissions'){
+	        		$('#hackathon-box-basicinfo').html('');    		
+	        		$('#hackathon-box-basicinfo').html(data);
+	        		$('#hackathon-box-leaderinfo').html('');    		
+	        		$('#hackathon-box-submissioninfo').html('');    		
+	        	}else{
+	        		if(pageType=='leaderboard'){
+	        			$('#hackathon-box-leaderinfo').html('');    		
+	        			$('#hackathon-box-leaderinfo').html(data);	
+	        		}else{
+	        			$('#hackathon-box-submissioninfo').html('');    		
+	        			$('#hackathon-box-submissioninfo').html(data);	
+	        		}	        		
+	        	}	    			        	
+	            loadModuleData=false;
+	        },complete:function(){
+	        	Tg_CommonFunction.tabLiBorderMove();
+	        }
+	    });
+
+	    $(document).on('click','.hackathon-refresh-btn',function(){
+	    	$(".hackathon-left-menu-ajax li [data='discussions']").click();
+	    });
+	}
+
+    $instance.timerCounter = function(){
+    	if (typeof(timerVar) !='undefined') {
+    		clearInterval(timerVar);	
+    	}    	    	
+    	timerVar = setInterval(countTimer, 1000);    	
+		
+		function countTimer() {
+			if(totalSeconds>0){
+	   			--totalSeconds;
+	   			var hour = Math.floor(totalSeconds /3600);
+	   			var minute = Math.floor((totalSeconds - hour*3600)/60);
+	   			var seconds = totalSeconds - (hour*3600 + minute*60);
+	   			if(minute==0 && seconds == 0){
+	   				var Id = $("#leaderboard-header-tabs").children(".active").attr('id');
+	   				totalSeconds = 900;
+	   				$("#"+Id+" a").click();
+	   			}
+	   			$("#timer-count").html(minute + ":" + seconds);
+	   		}else{
+	   			clearInterval(timerVar);
+	   		}
+		}		
+    }
+    
+
+    $instance.isScrolledIntoView = function(elem) {
+		var $elem = $(elem);
+		var $window = $(window);
+
+		var docViewTop = $window.scrollTop();
+		var docViewBottom = docViewTop + $window.height();
+
+		var elemTop = $elem.offset().top;
+		var elemBottom = elemTop + $elem.height() / 4.5;
+
+		return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+	}
+	
+	$instance.hackathonOnepage = function() {
+		$.getScript(theme_url + "/javascript/onepagenav.js")
+			.done(function() {
+				$('#hackathon-left-menu #collapse1 ul').onePageNav({ 
+					currentClass: 'active',
+					scrollOffset: 75,
+					scrollThreshold: 0.01,
+					changeHash: false,
+					filter: ':not(.external)'
+				});
+			})
+			.fail(function() {
+				console.log('onePageNav not loaded');
+			});
+	}
+
+	$instance.showleaderboard = function(level, season_id, level_season_id,flag_one,click_flag,user_id,sortText,sortOrder) {
+	
+		if(lbType=='leaderboard'){
+			$('#hackathon-box-leaderinfo #search_leaderboardname').val('');
+			var leaderboard_type = $("#hackathon-box-leaderinfo #leaderboard_type").val();
+			if(typeof leaderboard_type == 'undefined' || leaderboard_type == '') { leaderboard_type = 'challenge'; }
+			var page = $('#hackathon-box-leaderinfo #page_number').val();		
+			if(click_flag=='Y'){
+				var page = 1;
+			}
+			if(flag_one !=0){
+				var page = flag_one;	
+			}
+					
+	        var attempt_id = $('#attempt_id').val();
+			var attempt_key = $('#attempt_key').val();
+			var leaderboardType = $("#hackathon-box-leaderinfo #leaderboardType").val();
+		}else{
+			$('#hackathon-box-submissioninfo #search_leaderboardname').val('');
+			var leaderboard_type = $("#hackathon-box-submissioninfo #leaderboard_type").val();
+			if(typeof leaderboard_type == 'undefined' || leaderboard_type == '') { leaderboard_type = 'challenge'; }
+			var page = $('#hackathon-box-submissioninfo #page_number').val();		
+			if(click_flag=='Y'){
+				var page = 1;
+			}
+			if(flag_one !=0){
+				var page = flag_one;	
+			}
+					
+	        var attempt_id = $('#attempt_id').val();
+			var attempt_key = $('#attempt_key').val();
+			var leaderboardType = $("#hackathon-box-submissioninfo #leaderboardType").val();
+		}
+		
+		var ds_leaderboard = $('#ds_leaderboard').val();
+		
+		if(typeof attempt_id == 'undefined' || attempt_id == '') { attempt_id = ''; }
+		if(typeof user_id == 'undefined' || user_id == '') { user_id = ''; }
+		if(typeof leaderboardType == 'undefined' || leaderboardType == '') { leaderboardType = 'Normal'; }
+		if(typeof event_name == 'undefined' || event_name == '') { event_name = ''; }
+		if(typeof sortText == 'undefined' || sortText == '') { sortText = ''; }
+		if(typeof sortOrder == 'undefined' || sortOrder == '') { sortOrder = ''; }	
+		loadData = true;
+		$("#submission_level").val('');
+		Tg_HackathonPage.timerCounter();
+		$('#leaderboard-tab-content').html('<p class="text-center tg-loader"><img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>').show();
+        var action_file_url = base_url + '/ajax_files/load_assessment_leaderboard.php?page=' + page + '&type='+ leaderboard_type + '&season_id='+ season_id +'&level='+level+'&level_season_id='+level_season_id+"&attempt_key="+attempt_key+"&event_name="+event_name+"&user_id="+user_id+'&leaderboard_type='+leaderboardType+'&sort_parameter='+sortText+'&sort_order='+sortOrder+"&ds_leaderboard="+ds_leaderboard;;
+        $.ajax({
+            type: "POST",
+            dataType:'html',
+            url: action_file_url,
+            data: ({}),
+            success: function(response) {
+                data = response.trim();
+                loadData = false;				
+					 
+                if (data.indexOf("no_record") >= 0) {
+					$('#leaderboard-tab-content').html('');
+					$('#view_all_leaderboard').html('');
+					$('#view_all_leaderboard').html('<p> Be the first one to ace the leaerboard </p>');
+                } else {			
+					
+			        $("#hackathon-box-basicinfo").html('');
+			        if(lbType =='leaderboard'){
+			        	var idLeaderBox = ' #hackathon-box-leaderinfo';
+			        	$(idLeaderBox+ ' #view_all_leaderboard').html('');					
+						$(idLeaderBox+ " #leaderboar-name-data").show();
+			        	$(idLeaderBox+ ' #view_all_leaderboard').html(data);
+			        	$(idLeaderBox+ ",.hackathon-leaderboard").show();
+			        	$('#hackathon-box-submissioninfo').html('');
+			        	$(idLeaderBox).show();
+			        	var leaderbaord_level = $("#visible_level_leaderboard").val();
+			        	var child_season = $("#visible_level_child_seasonid").val();
+			        	$(idLeaderBox+ " #leaderboard_level").val(leaderbaord_level);
+				        $(idLeaderBox+ " #child_season_id").val(child_season);
+			        	if($(idLeaderBox+ " #leaderborType").val()==1){
+			        		$(idLeaderBox+ " #leaderboardType").val("Team");
+			        		$(idLeaderBox+ " #search_leaderboardname").attr('placeholder','Team Name');
+			        		$(idLeaderBox+ " .result_msg").show();
+			        	}else{
+			        		$(idLeaderBox+ " #leaderboardType").val("Normal");
+			        		$(idLeaderBox+ " #search_leaderboardname").attr('placeholder','Participant Name');
+			        		$(idLeaderBox+ " .result_msg").hide();
+			        	}
+			        }else{
+			        	var idLeaderBox = ' #hackathon-box-submissioninfo';
+			        	$(idLeaderBox+ ' #view_all_leaderboard').html('');					
+						$(idLeaderBox+ " #leaderboar-name-data").show();
+			        	$(idLeaderBox+ ' #view_all_leaderboard').html(data);
+			        	$(idLeaderBox+ ",.hackathon-leaderboard").show();
+			        	$('#hackathon-box-leaderinfo').html('');
+			        	$(idLeaderBox).show();
+			        	var leaderbaord_level = $("#visible_level_leaderboard").val();
+			        	var child_season = $("#visible_level_child_seasonid").val();
+			        	$(idLeaderBox+ " #leaderboard_level").val(leaderbaord_level);
+				        $(idLeaderBox+ " #child_season_id").val(child_season);
+			        	if($(idLeaderBox+ " #leaderborType").val()==1){
+			        		$(idLeaderBox+ " #leaderboardType").val("Team");
+			        		$(idLeaderBox+ " #search_leaderboardname").attr('placeholder','Team Name');
+			        		$(idLeaderBox+ " .result_msg").show();
+			        	}else{
+			        		$(idLeaderBox+ " #leaderboardType").val("Normal");
+			        		$(idLeaderBox+ " #search_leaderboardname").attr('placeholder','Participant Name');
+			        		$(idLeaderBox+ " .result_msg").hide();
+			        	}
+			        }
+			        
+			        if(sortData !=null && typeof sortData !='undefined'){
+			        	var sortDataExplode = sortData.split("|");
+			        	var sortDataText = sortDataExplode[0];
+			        	var sortDataClass = sortDataExplode[1].trim();
+			        	var columnindex = $('.table1 th:contains("'+sortDataText+'")').index();
+			        	$('.table1 th').eq(columnindex).removeClass('headerSortUp headerSortDown');
+			        	$('.table1 th').eq(columnindex).addClass(sortDataClass);
+			        }        
+			        
+			        var clicklevel = level-1;
+			        $("#leaderboard-header-tabs li").eq(clicklevel).addClass('active')
+			        var participantCount = $("#user_count").val();
+					
+					if(ds_leaderboard == 'public') {
+						$("#leaderboard-header-tabs > li").removeClass('active');
+						$("#leaderboard-header-tabs > li").eq(clicklevel).addClass('active');
+					}
+					
+					if(ds_leaderboard == 'private') {
+						$("#leaderboard-header-tabs > li").removeClass('active');
+						$("#leaderboard-header-tabs > li:eq(1)").addClass('active');
+					}
+					
+		            if(participantCount>0){
+			         	//participationString = "<span>• "+participantCount +" Participants</span>";
+			        }else{
+			         	participantCount = 0;
+			         	//participationString = "<span>• "+participantCount +" Participants</span>";
+			         	$("#leaderboar-name-data").hide();
+			        }				        
+			        $("#hackathon-leader-count").html("• "+participantCount+" Participants");
+			        Tg_CommonFunction.tabLiBorderMove();  		
+			    }
+            }
+        });
+    };
+
+     $instance.notifyUser = function(season_id,user_id,type) {
+		
+        var action_file_url = base_url + '/ajax_files/saas_corporate_function.php?action=save_notify_leaderboard_user';
+        $.ajax({
+            type: "POST",
+            url: action_file_url,
+            data: ({'season_id':season_id,'user_id':user_id,'type':type}),
+            success: function(response) {
+                data = response;
+                	
+                if (data.status == 1) {
+                	if(type==2){                		
+						$(".leaderNotNotified").hide();
+						$('.leaderNotified').show();
+                	}                	
+                } else if(data.status == 2) {	
+                	if(type==1){
+                		$(".remind_btn").remove();
+                		$(".reminder").html(data.msg);						
+                	}else if(type==2){
+                		
+                		$(".leaderNotNotified").hide();
+						$('.leaderNotified').show();
+                	}        	
+
+			    } else if(data.status == 3){
+					
+			    }
+            }
+        });
+    };
+
+};

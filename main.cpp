@@ -49,7 +49,7 @@ GLint time_s = 0;
 int lightning = 0;
 int corona_particles = 9;
 int soap_particles = 9;
-static GLuint textureNames[8];
+static GLuint textureNames[9];
 
 float angleleftleg = 30;
 float anglerightleg = -30;
@@ -58,7 +58,7 @@ int rightvar = 1, rightvar_auto = 1;
 int orthoview = 0;
 int houseline = 0;
 GLfloat humanangle = 180;
-GLdouble viewer[] = {0.0, 0.0, 3.0};
+GLdouble viewer[] = {0.0, 0.0, 9.0};
 void openDoor();
 void timers(int);
 void drawPolygon(point a, point b, point c, point d, int texture = 0, bool is_texture = false)
@@ -478,6 +478,15 @@ void drawCloud(GLfloat x, GLfloat y)
     glColor3f(255.0, 255.0, 255.0);
     drawCircleFilled(x - 25, y + 15, 35, 35);
 }
+void RenderString(float x, float y, void *font, const unsigned char *string, float const &r, float const &g, float const &b)
+{
+    char *c;
+
+    glColor3f(r, g, b);
+    glRasterPos2f(x, y);
+
+    glutBitmapString(font, string);
+}
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -504,6 +513,7 @@ void display()
         glMatrixMode(GL_MODELVIEW);
     }
     glLoadIdentity();
+
     glLightfv(GL_LIGHT0, GL_POSITION, lightposition);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, mat_diffuse);
     glLightfv(GL_LIGHT0, GL_AMBIENT, mat_ambient);
@@ -745,6 +755,23 @@ void display()
     glRotatef(90, 1, 0, 0);
     glutSolidCylinder(0.018, 0.3, 20, 20);
     glPopMatrix();
+    const unsigned char *t = reinterpret_cast<const unsigned char *>("Aashutosh Kumar Jha");
+
+    RenderString(-6.0f, 5.5f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
+    t = reinterpret_cast<const unsigned char *>("Akhil Singhal");
+
+    RenderString(-6.0f, 5.0f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
+
+    t = reinterpret_cast<const unsigned char *>("BANGALORE INSTITUTE OF TECHNOLOGY");
+
+    RenderString(-4.5f, 6.5f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
+
+    t = reinterpret_cast<const unsigned char *>("3D SHOPPING CENTER");
+
+    RenderString(-2.0f, 4.0f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.0f);
+    GLfloat bit[4][3] = {{3.8f, 1.5f + 3.6f, 1.5f}, {3.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 1.5f + 3.6f, 1.5f}};
+    drawPolygon(bit[0], bit[1], bit[2], bit[3], 8, true);
+
     glutSwapBuffers();
 }
 void timerf(int x)
@@ -760,7 +787,7 @@ void timerf(int x)
     else
     {
         moving_humanz += 0.01;
-        if (moving_humanz > 0.7)
+        if (moving_humanz > 0.5)
         {
             moving_human_angle = 0;
         }
@@ -953,8 +980,7 @@ void keys(unsigned char key, int x, int y)
         {
             thumanx -= 0.009;
         }
-        cout << thumanx << endl
-             << thumanz << sanitization[0] << endl;
+
         if (thumanx < -1.5 && thumanz < -0.15 && !sanitization[0])
         {
             human1_color[0] = 254 / 255.;
@@ -992,11 +1018,11 @@ void initTexture()
         "./rack.jpg",
         "./boundrymall.jpg",
         "./grass.jpg",
-        "./road.jpg", "./fight.jpg"};
+        "./road.jpg", "./fight.jpg", "./bit.png"};
 
-    glGenTextures(8, textureNames);
+    glGenTextures(9, textureNames);
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 9; i++)
     {
         // Select the texture object
         image_data = stbi_load(x[i], &width, &height, &nrChannels, 0);
@@ -1017,23 +1043,33 @@ void initTexture()
     // Enable textures
 }
 
+void catchKey(int key, int x, int y)
+{
+    if (key == GLUT_KEY_LEFT)
+        humanangle = -90;
+    else if (key == GLUT_KEY_RIGHT)
+        humanangle = 90;
+    else if (key == GLUT_KEY_DOWN)
+        humanangle = 0;
+    else if (key == GLUT_KEY_UP)
+        humanangle = 180;
+    ;
+    glutPostRedisplay();
+}
+
 int main(int argc, char **argv)
 {
     int rotatehuman;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(900, 900);
-    glutCreateWindow("3D HOUSE");
+    glutCreateWindow("3D Shopping Conter");
     initfirst();
     initTexture();
     glutDisplayFunc(display);
     glutReshapeFunc(handleresize);
     //    glutTimerFunc(1000,timerf,0);
     rotatehuman = glutCreateMenu(rotateHuman);
-    glutAddMenuEntry("90 ", 1);
-    glutAddMenuEntry("180 ", 2);
-    glutAddMenuEntry("-90 ", 3);
-    glutAddMenuEntry("0 ", 4);
     glutAddMenuEntry("lighton", 5);
     glutAddMenuEntry("lightoff", 6);
     glutAddMenuEntry("openDoor", 7);
@@ -1045,6 +1081,8 @@ int main(int argc, char **argv)
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
     glutKeyboardFunc(keys);
+    glutSpecialFunc(catchKey);
+
     glutMainLoop();
 
     return 0;

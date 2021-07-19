@@ -1,0 +1,433 @@
+/*
+*  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+*
+*  Use of this source code is governed by a BSD-style license
+*  that can be found in the LICENSE file in the root of the source
+*  tree.
+*/
+
+// This code is adapted from
+// https://rawgit.com/Miguelao/demos/master/mediarecorder.html
+
+'use strict';
+
+//capture screen
+
+
+const screenshotButton = document.querySelector('#screenshot-button');
+const video = document.querySelector('#screenshot video');
+const canvas = document.createElement('canvas');
+screenshotButton.onclick = video.onclick = function() {
+	canvas.width = video.videoWidth;
+	canvas.height = video.videoHeight;
+	canvas.getContext('2d').drawImage(video, 0, 0);
+	ImageData	= canvas.toDataURL('image/png');
+	$("#user-capture-image").attr('src', ImageData);
+	$(this).addClass('disabled');
+	$(this).text('Validating Image...');
+	saveSnapShot(ImageData, 'save_livesnapshot');		
+};
+
+//end here 
+
+/* globals MediaRecorder */
+
+const mediaSource = new MediaSource();
+mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
+let mediaRecorder;
+let recordedBlobs;
+let sourceBuffer;
+
+const errorMsgElement = document.querySelector('span#errorMsg');
+const recordedVideo = document.querySelector('video#recorded');
+const recordButton = document.querySelector('button#record');
+recordButton.addEventListener('click', () => {
+  if (recordButton.textContent === 'Start Recording') {
+    startRecording();
+  } else {
+    stopRecording();
+    recordButton.textContent = 'Start Recording';
+    downloadButton.disabled = false;
+  }
+});
+
+/*
+const playButton = document.querySelector('button#play');
+playButton.addEventListener('click', () => {
+  const superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+  recordedVideo.src = null;
+  recordedVideo.srcObject = null;
+  recordedVideo.src = window.URL.createObjectURL(superBuffer);
+  recordedVideo.controls = true;
+  recordedVideo.play();
+});*/
+
+const downloadButton = document.querySelector('button#download');
+downloadButton.addEventListener('click', () => {
+  
+	const blob = new Blob(recordedBlobs, {type: 'video/webm'});
+	var fd = new FormData();
+    fd.append('fname', 'test.webm');
+    fd.append('data', blob);
+    fd.append('opt', 'SaveVideoRecord');
+    fd.append('season_id', configWebCam.season_id);
+    fd.append('user_id', configWebCam.user_id);
+    fd.append('attempt_id', configWebCam.attempt_id);
+    $.ajax({
+        type: 'POST',
+        url: base_url + '/ajax_files/snap_shot.php',
+        data: fd,
+        processData: false,
+        contentType: false
+    }).done(function(data) {
+        console.log(data);
+    });	
+	
+/*
+ const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = 'test.webm';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }, 100);*/
+  
+  
+});
+
+function DownloadVideo() {
+	const blob = new Blob(recordedBlobs, {type: 'video/webm'});
+	var fd = new FormData();
+    fd.append('fname', 'test.webm');
+    fd.append('data', blob);
+    fd.append('opt', 'SaveVideoRecord');
+    fd.append('season_id', configWebCam.season_id);
+    fd.append('user_id', configWebCam.user_id);
+    fd.append('attempt_id', configWebCam.attempt_id);
+    $.ajax({
+        type: 'POST',
+        url: base_url + '/ajax_files/snap_shot.php',
+        data: fd,
+        processData: false,
+        contentType: false
+    }).done(function(data) {
+        //console.log(data);
+		startRecording();
+    });	
+}
+
+function CaptureIntervalImage() {
+	const video = document.querySelector('#screenshot video');
+	const canvas = document.createElement('canvas');
+	canvas.width = video.videoWidth;
+	canvas.height = video.videoHeight;
+	canvas.getContext('2d').drawImage(video, 0, 0);
+	ImageData	= canvas.toDataURL('image/png');
+	saveSnapShot(ImageData, 'save');		
+}
+
+function saveSnapShot(ImageData, save_livesnapshot) {
+
+		$(".error-capture-img, .success-capture-img").addClass('hide');
+		$(".candidate-capture-screen-img").removeClass('img-error');
+		$(".candidate-capture-screen-img").removeClass('img-success');
+		$(".candidate-capture-screen-img .btngroup").html('');
+		$(".id-card-label, .capture-text-label").removeClass('hide').css('visibility', 'hidden');
+		
+    $.ajax({url: base_url + '/ajax_files/snap_shot.php', data: {'opt': save_livesnapshot, 'season_id': configWebCam.season_id, 'user_id': configWebCam.user_id, attempt_id: configWebCam.attempt_id, 'image_date': ImageData},
+		success: function (result) {
+	
+			if(save_livesnapshot == 'save_livesnapshot') {
+				var response = JSON.parse(result);
+				
+				$(".id-card-label, .capture-text-label").addClass('hide');
+				$('.grey-scale-img').remove();
+				if(response.isvalid == 'True') {
+					
+					$(".candidate-capture-screen-img").addClass('img-success');
+					$(".candidate-capture-screen-img").removeClass('img-error');
+					$(".success-capture-img").removeClass('hide');
+					$(".error-capture-img").addClass('hide');
+					$(".candidate-capture-screen-img .btngroup").html('<a href="javascript:void(0);" class="btn min120 fctrl button1 continue-start-test">Start Test</a>');
+					$("#user-screen-capture-div .alert-msg-icon").remove();
+					$("#screenshot-button").removeClass('disabled').text('Capture Again').removeClass('button1').addClass('button2');
+
+				}  else {
+					
+					//verify again 
+					$(".candidate-capture-screen-img").removeClass('img-success');
+					$("#screenshot-button").removeClass('disabled');
+					$("#screenshot-button").text('Capture Again');
+					$(".candidate-capture-screen-img").addClass('img-error');
+					$(".success-capture-img").addClass('hide');
+					$(".error-capture-img").removeClass('hide');
+					
+					if(response.warning == '1') {
+						$( "<p class = 'mrg8 grey-scale-img' > It seems your web camera streams video as a static image. Please use webcam operates in normal mode. </p>" ).insertAfter(".user-capture-image_wrap");
+					}
+					
+				}
+			}
+
+		}, type: "POST"});
+}
+
+function SaveEachVideoFrame(data) {
+	FrameBlobs = [];
+	FrameBlobs.push(data);
+	const blob = new Blob(FrameBlobs, {type: 'video/webm'});
+	
+	var fd = new FormData();
+    fd.append('data', blob);
+    fd.append('opt', 'SaveVideoFrame');
+    fd.append('season_id', configWebCam.season_id);
+    fd.append('user_id', configWebCam.user_id);
+    fd.append('attempt_id', configWebCam.attempt_id);
+    $.ajax({
+        type: 'POST',
+        url: base_url + '/ajax_files/snap_shot.php',
+        data: fd,
+        processData: false,
+        contentType: false
+    }).done(function(data) {
+        console.log(data);
+    });
+}
+
+
+	
+function handleSourceOpen(event) {
+  console.log('MediaSource opened');
+  sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
+  console.log('Source buffer: ', sourceBuffer);
+}
+
+function handleDataAvailable(event) {
+  if (event.data && event.data.size > 0) {
+    recordedBlobs.push(event.data);
+	//SaveEachVideoFrame(event.data);
+  }
+}
+
+function startRecording() {
+	recordedBlobs = [];
+	let options = {mimeType: 'video/webm;codecs=vp9,opus'};
+	if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+		console.error(`${options.mimeType} is not supported`);
+		options = {mimeType: 'video/webm;codecs=vp8,opus'};
+		if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+		console.error(`${options.mimeType} is not supported`);
+		options = {mimeType: 'video/webm'};
+		if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+			console.error(`${options.mimeType} is not supported`);
+			options = {mimeType: ''};
+		}
+		}
+	}
+
+  try {
+    mediaRecorder = new MediaRecorder(window.stream, options);
+  } catch (e) {
+    console.error('Exception while creating MediaRecorder:', e);
+    //errorMsgElement.innerHTML = `Exception while creating MediaRecorder: ${JSON.stringify(e)}`;
+    return;
+  }
+
+  console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+  recordButton.textContent = 'Stop Recording';
+  //playButton.disabled = true;
+  downloadButton.disabled = true;
+  mediaRecorder.onstop = (event) => {
+    console.log('Recorder stopped: ', event);
+  };
+  mediaRecorder.ondataavailable = handleDataAvailable;
+  mediaRecorder.start(10); // collect 10ms of data
+  console.log('MediaRecorder started', mediaRecorder);
+}
+
+function stopRecording() {
+  mediaRecorder.stop();
+  console.log('Recorded Blobs: ', recordedBlobs);
+}
+
+function handleSuccess(stream) {
+	recordButton.disabled = false;
+	console.log('getUserMedia() got stream:', stream);
+	window.stream = stream;
+
+	const gumVideo = document.querySelector('video#gum');
+	var  webcam_candidate_status = $('#webcam_candidate_token_status').val();
+	gumVideo.srcObject = stream;
+	if(webcam_candidate_status != '1') {
+		window.clearTimeout(SD);
+		window.clearTimeout(UE);
+	}
+	$("#screenshot-button").removeClass('disabled');
+	$('#access_microphone_camera').prop('checked',false);
+  //startRecording();
+  //setInterval(function(){ CaptureIntervalImage(); }, 30000); //screenshot capture each 30 seconds
+  //setInterval(function(){ stopRecording(); DownloadVideo();  }, 30000); //screenshot capture each 30 seconds
+}
+
+async function init(constraints) {
+  try {
+	$('#access_microphone_camera').prop('checked',true);
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    handleSuccess(stream);
+  } catch (e) {
+	//$("#user-screen-capture-div h4").text('Proctoring is mandatory to participate in test. We are redirecting to challenge page.');
+	$('#access_microphone_camera').prop('checked',false);
+	if (!$('#browser-not-supported').hasClass('in')) {
+		$("#procchallengeenabled").prop('checked', false);
+		$("#camera-not-supported").modal({
+			backdrop: 'static',
+			keyboard: false
+		});
+		setTimeout(function(){window.location.href = window.test_page_url;}, 5000); 
+		console.error('navigator.getUserMedia error:', e);  
+	}
+    //errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+  }
+}
+
+document.querySelector('button#start').addEventListener('click', async () => {
+  const hasEchoCancellation = 0;
+  const constraints = {
+    audio: {
+      echoCancellation: {exact: hasEchoCancellation}
+    },
+    video: {
+      width: 610, height: 345
+    }
+  };
+  console.log('Using media constraints:', constraints);
+  await init(constraints);
+});
+
+$(document).on('click','.continue-start-test', function(){
+
+	/*
+	//video proctoring start here
+	$("#procchallengeenabled").prop('checked', false);
+	var cam_obj = $("#user-screen-capture-div .video-div");
+	$("#user-screen-capture-div .video-div").remove();
+	$("#webcam_container #webcam #container").append(cam_obj);
+	$(".video-div video").css('width', '225px');
+	$("#webcam_container").show();
+
+	StartCamRecordingCapture();
+	
+	//set webcam active
+	var candidate_attempt_id = $("#candidate_attempt_id").val();
+	$.ajax({
+		type: 'POST',
+		url: base_url+'/ajax_files/snap_shot.php?opt=active_webcam_allow&candidate_attempt_id='+candidate_attempt_id,
+		success: function(data){
+			//
+		}
+	});
+	
+	//if full screen mode on 
+	var fullscreen_mode = $("#is_full_screen_mode").val();
+	if(fullscreen_mode == 1) {
+		$("#fullscreenpopup").attr("checked", "checked");
+	} else {
+		if(category_key == 'coding' && (typeof(category_key) !== 'undefined')) {
+			if(typeof(category_key) === 'undefined') {
+				var isEventPage = '';
+			}
+			Tg_ChallengesPage.setCountDown(category_key, question_id, encrypt_token, platform_type, isEventPage);
+		} else {
+			Tg_ChallengesPage.setCountDown();
+		}
+	}*/
+
+	//set webcam active
+	var candidate_attempt_id = $("#candidate_attempt_id").val();
+	$.ajax({
+		type: 'POST',
+		url: base_url+'/ajax_files/snap_shot.php?opt=active_webcam_allow&candidate_attempt_id='+candidate_attempt_id,
+		success: function(data){
+			//
+		}
+	});
+
+	$.ajax({
+		type: 'POST',
+		url: base_url+'/ajax_files/assessment_check_participation.php?verify_proctoring=true&season_id='+configWebCam.season_id,
+		success: function(msg){
+			if (msg.status == 'success') {
+				window.location.href = msg.url;			
+			}
+		}
+	});
+
+	
+	
+});
+
+$(document).on('click','.see_cam_warning_log', function(){
+	var season_id = $(this).attr('data-season_id');
+	var user_id = $(this).attr('data-user_id');
+	var attempt_id = $(this).attr('data-attempt_id');
+	$("#webcam_movement_warning_modal").modal('show');
+	$("#webcam_movement_warning").html('<p class="text-center tg-loader"> Please wait <br /> <img src="' + THEME_PATH + '/images/TG-Loader.gif"></p>');
+	$.ajax({
+		type: 'POST',
+		url: base_url+'/ajax_files/snap_shot.php?opt=read_log&season_id='+season_id+'&user_id='+user_id+'&attempt_id='+		attempt_id,
+		success: function(data){
+			$("#webcam_movement_warning").html(data);
+		}
+	});
+});
+
+function StartCamRecordingCapture() {
+	
+	if(configWebCam.recording_required == 'M') {
+		startRecording();
+		setInterval(function(){ stopRecording(); DownloadVideo();  }, 60*1000); //recording capture each 1 minutes
+	}
+	
+	window.CIMG = setInterval(function(){ CaptureIntervalImage(); }, 30 * 1000); // After every 30 seconds
+	setInterval(screen_capture, 60 * 1000); //screenshot capture each 2 minutes 
+
+	if(configWebCam.allow_new_tab == 'Y'){
+	   var name = 'window_warning';
+	   if(GetCookieName(name)) {
+		   window.window_warning = parseInt(GetCookieName(name));
+		} else {
+		   window.window_warning = 0;
+		}
+	   window.ANTS = setInterval( function() { userLooseFocus(encrypt_token,question_id,platform_type,out_movement_allowed_number, category_key); }, 1000 ); 
+	}
+
+}
+
+/*
+$(function(){
+	var pos_l = 0;
+	if($("#need_help_coding_common").length) {
+		var pos = $("#need_help_coding_common").position();
+		pos_l = pos.left - 41;
+	}
+	$(".proctring-disable").click(function(){
+		$("#webcam_container").attr("style",$("#webcam_container").attr("data-style")).removeClass("minimizeblk");	
+	});
+	$("#webcam_containerheader").click(function(){
+		var _currStyle = $("#webcam_container").attr("style");	
+		console.log("0",_currStyle);
+		$("#webcam_container").attr("data-style",_currStyle);
+		$("#webcam_container").addClass("minimizeblk");
+		var t = setInterval(function(){
+			if(!$("#webcam_container").hasClass("resizeblk")){
+				$("#webcam_container").animate({top:15,left: pos_l +"px"});
+				clearInterval(t);
+			}
+		},500);				
+		
+	})
+});*/

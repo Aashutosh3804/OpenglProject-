@@ -1,0 +1,130 @@
+/****
+ * @Author @Naman Kaushik
+ * Date 8 July 2020
+ *  Version 1.1
+ *  Generic Socket Class for capturing server timestamp,solely implemented for syncing multiple users timers 
+ * one connection call per page
+ * ****/
+TGTimeSyncSocket = new function() {
+    var $instance = this;
+    $instance.objSocket = null;
+    $instance.disconnect = false;
+    var config = {};
+    config.receiverCallback = null;
+    config.errorCallback = null;
+    config.url = 'https://codesync.techgig.com/tg-websocket';
+    config.socketObj = null;
+    var connect_counter = 0;
+
+    $instance.init = function(receiverCallback, errorCallback) {
+      if(typeof(SD) != 'undefined' && SD != null) {
+        clearTimeout(SD);
+      }
+
+      errorCallback = (typeof errorCallback != 'undefined') ? errorCallback : '';
+      config.errorCallback = errorCallback && typeof(errorCallback) == 'function' ? errorCallback : '';
+
+      config.receiverCallback = receiverCallback && typeof(receiverCallback) == 'function' ? receiverCallback : $instance.receiveMessages;
+      $instance.connect();
+
+      $(window).bind('beforeunload', function(){
+        $instance.saveTimerMode('S-R'); //remove from timer modes log
+      });
+    }
+
+
+    $instance.connect = function() {
+            connect_counter++;        
+            var socket = new SockJS(config.url);
+            config.socketObj = $instance.objSocket = Stomp.over(socket);
+            config.socketObj.connect({}, function(frame) {
+              /*if(typeof(config.socketObj)!='undefined' && config.socketObj.subscriptions &&  config.socketObj.subscriptions.length>0)
+              for (var sub in  config.socketObj.subscriptions) {
+                  if (typeof config.socketObj !='undefined' &&  config.socketObj.subscriptions &&config.socketObj.subscriptions.hasOwnProperty(sub)){
+                      config.socketObj.unsubscribe(sub);
+                  }
+              }*/
+                console.log('socket connected');
+                $instance.saveTimerMode('S-S');
+                connect_counter = 0; //reset connect_counter
+
+                config.socketObj.subscribe('/topic/gettime', function(msg) {
+                  config.receiverCallback(msg.body);
+                });
+            }, function(err_msg) {
+                console.log('socket not connected');
+                //console.log('socket error==='+err_msg);
+                if(parseInt(connect_counter) > 0 && parseInt(connect_counter)%5 == 0) {
+                  $instance.sendConnectionFailedAlert(err_msg, connect_counter); //send connection failed alert to team
+                }
+                if(typeof(config.errorCallback)!='undefined' && typeof(config.errorCallback) == 'function') {
+                  config.errorCallback();
+                }
+                config.socketObj.disconnect();
+                $instance.reconnect();
+              });    
+            config.socketObj.reconnectDelay = 5000;   
+            config.socketObj.debug = null;
+    }
+
+    $instance.receiveMessages = function(msg) {
+        //console.log(msg);
+    }
+
+    $instance.reconnect=function(){
+        console.log('reconecting');
+        var connected = false;
+        var reconInv = setInterval(function() {
+            ws = new  SockJS(config.url);
+            config.socketObj = Stomp.over(ws);
+            console.log(config.socketObj.subscriptions);
+            if(typeof(config.socketObj)!='undefined' && config.socketObj.subscriptions){
+              for (var sub in  config.socketObj.subscriptions) {
+                      config.socketObj.unsubscribe(sub);
+                  }
+                }
+            config.socketObj.connect({}, function(frame) {
+            clearInterval(reconInv);
+            connected = true;
+            config.socketObj.reconnectDelay = 5000;   
+            config.socketObj.debug = null;
+            config.socketObj.disconnect();
+            console.log(config.socketObj.subscriptions);
+            for (var sub in  config.socketObj.subscriptions) {
+                    config.socketObj.unsubscribe(sub);
+                }
+        
+            TGTimeSyncSocket.init(config.receiverCallback, config.errorCallback);
+          }, function() {
+            if (connected) {
+              console.log(config.socketObj.subscriptions);
+              if(typeof(config.socketObj)!='undefined' && config.socketObj.subscriptions){
+                config.socketObj.disconnect();
+                for (var sub in  config.socketObj.subscriptions) {
+                        config.socketObj.unsubscribe(sub);
+                    }
+                  }
+              $instance.reconnect();
+            }
+          });
+        }, 1000);      
+    }
+
+    $instance.sendConnectionFailedAlert = function(msg, connect_counter) {
+      try{
+        var url = base_url+"/ajax_files/saas_candidate_function.php?action=send_socket_alert";
+        $.post(url,{'tkn':encrypt_token, 'msg': msg, 'cnt': connect_counter},function(data){
+          
+        });        
+      } catch(e){}
+    }
+
+    $instance.saveTimerMode = function(mode) {
+      try{
+        var url = base_url+"/ajax_files/saas_candidate_function.php?action=save_timer_mode";
+        $.post(url,{'tkn':encrypt_token, 'mode':mode},function(data){
+          
+        });
+      } catch(e){}
+    }
+}

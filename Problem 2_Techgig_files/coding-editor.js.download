@@ -1,0 +1,225 @@
+/**#######  File belongs for Coding editor only. Please don't put any extra JS here  ###########*/
+
+function resetstate(state) {
+    if (state == true) {
+        $("._bottom-section").find(".btn").addClass("disabled").prop("disabled", "disabled");
+        $(".compile-button-click-attr").removeClass("disabled");
+    }
+}
+$(function () {
+    if ($("#questiontabmap").length) {
+        $("#questiontabmap li").click(function () {
+            var _liindex = $(this).index();
+            setTimeout(function () {
+                if (_liindex > 0) {
+                    $("#container-wrap").addClass("_hideeditor");
+                } else {
+                    $("#container-wrap").removeClass("_hideeditor");
+                }
+            }, 50);
+        })
+    }
+
+    $(window).load(function () {
+        if (cookieValue != "") {
+            var editorMode = getCook('editormode');
+            var editorTheme = getCook('editortheme');
+            var editorLang = getCook('editorlang');
+            if (editorLang != "c") {
+                var langObj = $(".change-language-confirmation-testcase").find("option[monaco_id = '" + editorLang + "']");
+                if (langObj.length) {
+                    $(".change-language-confirmation-testcase").val(langObj.attr("value")).trigger("change");
+                }
+
+            }
+            //'.change-language-confirmation-testcase',
+            if (editorTheme != "vs") {
+                $(".theme_setting[data-value]").removeClass("active");
+                $(".theme_setting[data-value='" + editorTheme + "']").addClass("active").trigger("click");
+            }
+        }
+    });
+
+    $(".overlay_close").click(function () {
+        $(".editor-overlay-ctrl").prop("checked", false);
+    })
+    $('[data-tooltip="tooltip"]').tooltip();
+    $("#use_custom_input").click(function () {
+        var _isTrue = $(this).prop("checked");
+        if (_isTrue == true) {
+            $(".customctrlwrap").addClass("visibletrue")
+            $(".compilectrlwrap").removeClass("visibletrue");
+            $(".compilectrlwrap").find("._panel-container").removeClass("success error").removeAttr("style");
+        } else {
+            $(".customctrlwrap").removeClass("visibletrue")
+        }
+    })
+    $(".maximize-btn").click(function () {
+        if ($(".maximize-btn").hasClass("minactive")) {
+            $(this).removeClass("minactive");
+            $(".maximize-btn").parents("li").attr("data-original-title", "Maximize Editor").tooltip('hide');
+            $("#container-wrap").removeClass("fullscreeneditor").css("padding-top", 64);
+        } else {
+            $(".maximize-btn").parents("li").attr("data-original-title", "Minimize Editor").tooltip('hide');
+            $(this).addClass("minactive");
+            $("#container-wrap").addClass("fullscreeneditor").css("padding-top", 0);
+        }
+        resizeFunc();
+    })
+
+    $(".compile-button-click-attr,.straight-editor-btn").click(function () {
+        openCompileResult('true');
+        $(".tablecompile").removeClass("compile submit");
+        $(".compile-sts").removeClass("current");
+        $(".open-content").hide();
+        $("._cpmsts").removeClass("passed failed");
+    })
+
+    //#######  Cookies Values Extracting   ###########//#endregion
+    var cookieValue = getCook('editormode');
+    if (cookieValue != "") {
+    } else {
+        setCookie("editormode", "v", 30);
+        setCookie("editortheme", "vs", 30);
+        setCookie("editorlang", "c", 30);
+    }
+
+    $(document).on('click', '.test_case_log', function () {
+        var error_log = $(this).data('title');
+        $('#test_case_error_log .modal-body p').html('<pre>' + error_log + '</pre>');
+        $('#test_case_error_log').modal('show');
+    });
+});
+function openCompileResult(_isTrue) {
+    if (!$("#container-wrap").hasClass("staticview")) {
+        $(".compilectrlwrap").find(".panel-body").css("max-height", $("#editor_content_wrapper").height() * 0.7);
+    }
+    if (_isTrue == 'true') {
+        $("#loadergif").show();
+        $("._compile_result").hide();
+        $(".customctrlwrap").removeClass("visibletrue");
+        $(".compilectrlwrap").addClass("visibletrue");
+    }
+    if (_isTrue == 'false') {
+        $(".compilectrlwrap").removeClass("visibletrue");
+        $(".compilectrlwrap").find("._panel-container").removeClass("success error").removeAttr("style");
+    }
+}
+
+function buildCompileResult(result, action) {
+    //console.log(result, action, " :result =============== action")
+    $("._panel-container").removeClass("success error").removeAttr("style");
+    $(".temprow").remove();
+    if ($('#use_custom_input').is(':checked')) {
+        $(".compilectrlwrap").addClass("use_custom_input");
+    } else {
+        $(".compilectrlwrap").removeClass("use_custom_input");
+    }
+    $("#use_custom_input").prop("checked", false);
+    $(".customctrlwrap").removeClass("visibletrue");
+    action = action || "compile";
+    $("._panel-container").addClass(result.status);
+    $("#loadergif").hide();
+    if (result.status == "success") {
+        for (var _i = 0; _i < result.message.length; _i++) {
+            var node = $("#_compile_row");
+            var nodeDesc = $("#_desc_row");
+            if (_i > 0) {
+                var node = $("#_compile_row").clone(true);
+                var nodeDesc = $("#_desc_row").clone(true);
+                if ((_i + 1) % 2 == 0)
+                    $(node).addClass("even");
+                $(node).removeAttr("id").addClass("temprow");
+                $(nodeDesc).removeAttr("id").addClass("temprow");
+                $("#result_table").append(node);
+                $("#result_table").append(nodeDesc);
+            }
+            assignBuildData(node, nodeDesc, result.message[_i]);
+        }
+        $("#result_table").addClass(action);
+        $("._compile_result.success").show();
+        dynloading();
+        if ($("#container-wrap").hasClass("staticview")) {
+            if ($(".compilectrlwrap").length) {
+                var hash = ".compilectrlwrap";
+                $('#editor-box').animate({
+                    scrollTop: $(hash).offset().top
+                }, 800, function () {
+                    console.log($(hash).offset().top, "$(hash).offset().top");
+                })
+            }
+        }
+        if (result.remaining_attempt > -1) {
+            if (result.remaining_attempt == 0) {
+                resetstate(true);
+            }
+            $("#attempleft").text(result.remaining_attempt);
+        }
+
+    } else {
+        $("._compile_result.error-msg").show().find("pre").text(result.message);
+    }
+    openCompileResult('hi');
+    /** First row open **/
+    //$("#_compile_row").find(".expand-collapse-btn-testcase").trigger("click");
+    /** ./First row open **/
+
+    /** Failed row open **/
+    $(".compile-sts.temprow,#_compile_row").each(function () {
+        if ($(this).find("._cpmsts").hasClass("failed") && !$(this).find("._cpmsts").hasClass("passed") && $(this).find(".action-lnk").length) {
+            $(this).addClass("current").next().show();
+        }
+    })
+    /** ./Failed row open **/
+
+    if ($("#container-wrap").hasClass("staticview")) {
+        if ($(".compilectrlwrap").length) {
+            var position = 0, _tNode = "";
+            if ($("#container-wrap").hasClass("horizontalview")) {
+                position = $(".compilectrlwrap").offset().top;
+                _tNode = "html,body";
+            } else {
+                position = $(".compilectrlwrap").offset().top + $("#editor-box").offset().top;
+                _tNode = "#editor-box";
+            }
+
+            $(_tNode).animate({ scrollTop: position }, 800, function () {
+                console.log("$(hash).offset().top");
+            })
+        }
+    }
+}
+
+function dynloading() {
+    var _index = 1;
+    if ($(".compile-sts").length > 1) {
+        var ltimes = [];
+        for (var i = 1; i < $(".compile-sts").length; i++) {
+            ltimes[i] = Math.floor(Math.random() * 2000) + 200;
+            $(".compile-sts").eq(i).addClass("loaderactive");
+            setInterval(function () {
+                $(".compile-sts").eq(_index++).removeClass("loaderactive");
+                clearInterval(ltimes[i]);
+            }, ltimes[i]);
+        }
+    }
+}
+
+function assignBuildData(objNode, objNodeDesc, dataNode) {
+    $(objNode).find("._name").text(dataNode.input);
+    $(objNode).find("._cpmsts").removeClass("passed failed").addClass(dataNode.ispassed == true ? "passed" : "failed");
+    $(objNode).find(".time").text(dataNode.execution_time);
+    $(objNode).find(".memory").text(dataNode.memory);
+    $(objNode).find(".score").text(dataNode.score || 0);
+    if (dataNode.testcase_type == '') { // && dataNode.ispassed != true
+        console.log(objNode, "objnode");
+        var _lnk = '<a href="javascript:void(0);" data-toggle="modal" data-target="#test_case_error_log" data-title="' + dataNode.message + '" class="text-icon test_case_log"></a>';
+        var _aparent = $(objNode).find(".action-lnk").parent();
+        _aparent.html(_lnk);
+        $(".compile-sts.temprow").removeClass("current").next().hide();
+        //$(objNode).find(".action-lnk").remove();
+    }
+    $(objNodeDesc).find("#result_testcaseinput").html(dataNode.candidate_input);
+    $(objNodeDesc).find("#result_testcaseexpected").html(dataNode.expected_output);
+    $(objNodeDesc).find("#result_testcaseoutput").html(dataNode.candidate_output || "Standard output is empty");
+}
