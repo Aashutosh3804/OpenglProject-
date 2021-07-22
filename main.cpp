@@ -755,24 +755,24 @@ void display()
     glRotatef(90, 1, 0, 0);
     glutSolidCylinder(0.018, 0.3, 20, 20);
     glPopMatrix();
-    const unsigned char *t = reinterpret_cast<const unsigned char *>("Aashutosh Kumar Jha");
+    // const unsigned char *t = reinterpret_cast<const unsigned char *>("Aashutosh Kumar Jha");
 
-    RenderString(-6.0f, 5.5f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
-    t = reinterpret_cast<const unsigned char *>("Akhil Singhal");
+    // RenderString(-6.0f, 5.5f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
+    // t = reinterpret_cast<const unsigned char *>("Akhil Singhal");
 
-    RenderString(-6.0f, 5.0f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
+    // RenderString(-6.0f, 5.0f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
 
-    t = reinterpret_cast<const unsigned char *>("BANGALORE INSTITUTE OF TECHNOLOGY");
+    // t = reinterpret_cast<const unsigned char *>("BANGALORE INSTITUTE OF TECHNOLOGY");
 
-    RenderString(-4.5f, 6.5f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
+    // RenderString(-4.5f, 6.5f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.8196f);
 
-    t = reinterpret_cast<const unsigned char *>("3D SHOPPING CENTER");
+    const unsigned char *t = reinterpret_cast<const unsigned char *>("3D SHOPPING CENTER");
 
     RenderString(-2.0f, 4.0f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.0f);
-    GLfloat bit[4][3] = {{3.8f, 1.5f + 3.6f, 1.5f}, {3.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 1.5f + 3.6f, 1.5f}};
-    // GLfloat bits[4][3] = {{-10.0f, 1.5f + 3.6f, 1.5f}, {-10.0f, 10.5f + 3.6f, 1.5f}, {10.0f, 10.5f + 3.6f, 1.5f}, {10.f, 1.5f + 3.6f, 1.5f}};
+    // GLfloat bit[4][3] = {{3.8f, 1.5f + 3.6f, 1.5f}, {3.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 1.5f + 3.6f, 1.5f}};
+    GLfloat bits[4][3] = {{-10.0f, 1.5f + 3.6f, 1.5f}, {-10.0f, 10.5f + 3.6f, 1.5f}, {10.0f, 10.5f + 3.6f, 1.5f}, {10.f, 1.5f + 3.6f, 1.5f}};
 
-    drawPolygon(bit[0], bit[1], bit[2], bit[3], 8, true);
+    drawPolygon(bits[0], bits[1], bits[2], bits[3], 8, true);
 
     glutSwapBuffers();
 }
@@ -1020,7 +1020,7 @@ void initTexture()
         "./rack.jpg",
         "./boundrymall.jpg",
         "./grass.jpg",
-        "./road.jpg", "./fight.jpg", "./bit.png"};
+        "./road.jpg", "./fight.jpg", "./intro.jpeg"};
 
     glGenTextures(9, textureNames);
 
