@@ -50,12 +50,11 @@ int lightning = 0;
 int corona_particles = 9;
 int soap_particles = 9;
 static GLuint textureNames[9];
-
 float angleleftleg = 30;
 float anglerightleg = -30;
 int leftvar = 1, leftvar_auto = 1;
 int rightvar = 1, rightvar_auto = 1;
-int orthoview = 0;
+int orthoview = 1;
 int houseline = 0;
 GLfloat humanangle = 180;
 GLdouble viewer[] = {0.0, 0.0, 9.0};
@@ -265,10 +264,11 @@ void rotateHuman(int choice)
     switch (choice)
     {
     case 1:
-        humanangle = 90;
+        orthoview = 1;
         break;
     case 2:
-        humanangle = 180;
+        orthoview = 0;
+
         break;
     case 3:
         humanangle = -90;
@@ -770,6 +770,8 @@ void display()
 
     RenderString(-2.0f, 4.0f, GLUT_BITMAP_TIMES_ROMAN_24, t, 0.0f, 0.807f, 0.0f);
     GLfloat bit[4][3] = {{3.8f, 1.5f + 3.6f, 1.5f}, {3.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 1.5f + 3.6f, 1.5f}};
+    // GLfloat bits[4][3] = {{-10.0f, 1.5f + 3.6f, 1.5f}, {-10.0f, 10.5f + 3.6f, 1.5f}, {10.0f, 10.5f + 3.6f, 1.5f}, {10.f, 1.5f + 3.6f, 1.5f}};
+
     drawPolygon(bit[0], bit[1], bit[2], bit[3], 8, true);
 
     glutSwapBuffers();
@@ -1070,10 +1072,14 @@ int main(int argc, char **argv)
     glutReshapeFunc(handleresize);
     //    glutTimerFunc(1000,timerf,0);
     rotatehuman = glutCreateMenu(rotateHuman);
+    glutAddMenuEntry("ortho", 1);
+    glutAddMenuEntry("perspective", 2);
+
     glutAddMenuEntry("lighton", 5);
     glutAddMenuEntry("lightoff", 6);
     glutAddMenuEntry("openDoor", 7);
     glutAddMenuEntry("Sanitize", 8);
+
     glutAddMenuEntry("Sanitize_done", 9);
 
     glutTimerFunc((1000 / 10), timerf, 0);
