@@ -772,7 +772,7 @@ void display()
     // GLfloat bit[4][3] = {{3.8f, 1.5f + 3.6f, 1.5f}, {3.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 2.5f + 3.6f, 1.5f}, {5.8f, 1.5f + 3.6f, 1.5f}};
     GLfloat bits[4][3] = {{-10.0f, 1.5f + 3.6f, 1.5f}, {-10.0f, 10.5f + 3.6f, 1.5f}, {10.0f, 10.5f + 3.6f, 1.5f}, {10.f, 1.5f + 3.6f, 1.5f}};
 
-    drawPolygon(bits[0], bits[1], bits[2], bits[3], 8, true);
+    // drawPolygon(bits[0], bits[1], bits[2], bits[3], 8, true);
 
     glutSwapBuffers();
 }
@@ -862,7 +862,6 @@ void timers(int x)
 }
 void initfirst()
 {
-    glEnable(GL_DEPTH_TEST);
     glClearColor(0.2f, 0, 0, 0);
     glMatrixMode(GL_PROJECTION);
 
